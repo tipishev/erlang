@@ -1,9 +1,20 @@
 -module(math_functions).
--export([odd/1, even/1, filter/2]).
+-export([odd/1, even/1, my_map/2, my_filter/2]).
 
 odd(Number) -> Number rem 2 =:= 1.  
 even(Number) -> Number rem 2 =:= 0.  
 
+% from StackOverflow
+% even(X) when X >= 0 -> (X band 1) == 0.
+% odd(X) when X > 0 -> not even(X).
 
+my_map(F, [H|T]) -> [F(H) | my_map(F, T)];
+my_map(_F, []) -> [].
 
+my_filter(F, [H|T]) ->
+    case (F(H)) of
+        true -> [H|my_filter(F, T)];
+	false -> my_filter(F, T)
+    end;
+my_filter(_F, []) -> [].
 
