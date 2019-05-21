@@ -1,5 +1,5 @@
 -module(math_functions).
--export([odd/1, even/1, my_map/2, my_filter/2]).
+-export([odd/1, even/1, my_map/2, my_filter/2, split/1]).
 
 odd(Number) -> Number rem 2 =:= 1.  
 even(Number) -> Number rem 2 =:= 0.  
@@ -17,4 +17,12 @@ my_filter(F, [H|T]) ->
 	false -> my_filter(F, T)
     end;
 my_filter(_F, []) -> [].
+
+split(L) -> split(L, {odd, []}, {even, []}).
+split([H|T], {odd, Odd}, {even, Even}) ->
+    case (H rem 2) of
+        1 -> split(T, {odd, [H|Odd]}, {even, Even});
+        0 -> split(T, {odd, Odd}, {even, [H|Even]})
+    end;
+split([], {odd, Odd}, {even, Even}) -> {Odd, Even}.
 
