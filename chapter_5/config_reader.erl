@@ -3,5 +3,7 @@
 
 read_config(FileName) ->
     {ok, File} = file:open(FileName, [read]),
-    maps:from_json(File).
+    Txt = file:read(File, 1024 * 1024),
+    % io:fwrite("~p~n", [Txt]).
+    jiffy:decode(Txt).
 
