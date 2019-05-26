@@ -1,0 +1,7 @@
+{
+  "string": "hello",
+  "int": 42,
+  "float": 4.2,
+  "list": ["foo", 1, 2.0],
+  "object": {"foo": "bar"}
+}
