@@ -1,0 +1,36 @@
+.SUFFIXES: .erl .beam .yrl
+
+.erl.beam:
+	erlc -W $<
+
+.yrl.erl:
+	erlc -W $<
+
+ERL = erl -boot start_clean
+
+# check for tabs vs spaces
+MODS = module1 module2 \
+       module3  ... special1 ...\
+       ...
+       moduleN
+
+all: compile
+
+compile: ${MODS:%=%.beam} subdirs
+
+special.beam: special1.erl
+	${ERL} -Dflag1 -W0 special1.erl
+
+application1: compile
+	${ERL} -pa Dir1 - application1 start Arg1 Arg2
+
+subdirs:
+	cd dir1; $(MAKE)
+	cd dir2; $(MAKE)
+	...
+
+clean:
+	rm -rf *.beam erl_crash.dump
+	cd dir1; $(MAKE) clean
+	cd dir2; $(MAKE) clean
+
