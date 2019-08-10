@@ -1,5 +1,10 @@
 -module(area_server_final).
--export([loop/0, rpc/2]).
+-export([loop/0, start/0, area/2]).
+
+start() -> spawn(area_server_final, loop, []).
+
+area(Pid, What) ->
+    rpc(Pid, What).
 
 rpc(Pid, Request) ->
     Pid ! {self(), Request},
