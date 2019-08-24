@@ -1,37 +1,20 @@
 -module(cycle).
--export([
-     start/2,
-     transmit/2,
-     relay/0,
-     repeat/2
-]).
+-compile(export_all).
 
-start(N, M) ->
-    % statistics(runtime),
-    % statistics(wall_clock),
+start() ->
+    spawn(?MODULE, loop, [42]).
 
-    % hm... chicken and egg with Next
-    RPid = spawn(cycle, relay, []),
-    spawn(cycle, transmit, [RPid, M]).
-
-transmit(Next, M) ->
+rpc(Pid, Request) ->
+    Pid ! {self(), Request},
     receive
-        die -> void;
-        MessageNum when MessageNum < M ->
-            Next ! MessageNum + 1,
-            transmit(Next, M);
-        MessageNum when MessageNum == M ->
-            io:format("done~n"),
-            transmit(Next, M)
+        {Pid, Response} -> Response
     end.
 
-relay() ->
+loop(X) ->
     receive
-        die -> void;
-        % Message -> Next ! Message
-        Msg ->
-            io:format("relaying message ~p~n", [Msg]),
-            relay()
+        Any ->
+            io:format("received: ~p~n", [Any]),
+            loop(X)
     end.
 
 repeat(F, N) -> for(1, N, F).
