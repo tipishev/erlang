@@ -1,4 +1,3 @@
-
 -module(ring).
 -export([send/2]).
 
