@@ -1,7 +1,8 @@
 -module(world).
--export([hello/0]).
+% -export([hello/0]).
+-export([add/2]).
 
--include("world.hrl").
+% -include("world.hrl").
 
-hello() -> ?GREETING.
-
+% hello() -> ?GREETING.
+add(A, B) -> A + B.
