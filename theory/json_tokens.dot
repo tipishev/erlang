@@ -1,0 +1,569 @@
+digraph "DFA" {
+	graph [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+	]
+	node [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "ellipse"
+		style = "solid"
+	]
+	edge [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		style = "solid"
+	]
+	"32" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"31" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "doublecircle"
+		style = "solid"
+	]
+	"30" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "doublecircle"
+		style = "solid"
+	]
+	"29" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+		color = "green"
+	]
+	"28" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "doublecircle"
+		style = "solid"
+	]
+	"27" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"26" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "doublecircle"
+		style = "solid"
+	]
+	"25" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"24" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "doublecircle"
+		style = "solid"
+	]
+	"23" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "doublecircle"
+		style = "solid"
+	]
+	"22" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "doublecircle"
+		style = "solid"
+	]
+	"21" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"20" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"19" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "doublecircle"
+		style = "solid"
+	]
+	"18" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"17" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"16" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"15" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"14" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"13" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "doublecircle"
+		style = "solid"
+	]
+	"12" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"11" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"10" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"9" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"8" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "doublecircle"
+		style = "solid"
+	]
+	"7" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"6" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"5" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"4" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"3" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"2" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "doublecircle"
+		style = "solid"
+	]
+	"1" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"0" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		shape = "circle"
+		style = "solid"
+	]
+	"n33" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "\N"
+		shape = "ellipse"
+		style = "solid"
+	]
+	"n34" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "\N"
+		shape = "ellipse"
+		style = "solid"
+	]
+	"32" -> "28" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[0-9]"
+		style = "solid"
+	]
+	"30" -> "30" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[0-9]"
+		style = "solid"
+	]
+	"30" -> "32" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "\."
+		style = "solid"
+	]
+	"29" -> "4" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "\""
+		style = "solid"
+	]
+	"29" -> "6" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "f"
+		style = "solid"
+	]
+	"29" -> "8" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[}{\]\[:,]"
+		style = "solid"
+	]
+	"29" -> "9" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "n"
+		style = "solid"
+	]
+	"29" -> "12" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "\-"
+		style = "solid"
+	]
+	"29" -> "25" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "t"
+		style = "solid"
+	]
+	"29" -> "26" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[1-9]"
+		style = "solid"
+	]
+	"29" -> "31" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[\\s\\r\\t\\n]"
+		style = "solid"
+	]
+	"28" -> "16" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[eE]"
+		style = "solid"
+	]
+	"28" -> "28" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[0-9]"
+		style = "solid"
+	]
+	"27" -> "0" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "\\"
+		style = "solid"
+	]
+	"27" -> "19" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "\""
+		style = "solid"
+	]
+	"27" -> "27" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[\\n\\000-\\t\\v-!#-\[\]-MAXCHAR]"
+		style = "solid"
+	]
+	"26" -> "26" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[1-9]"
+		style = "solid"
+	]
+	"26" -> "30" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "0"
+		style = "solid"
+	]
+	"26" -> "32" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "\."
+		style = "solid"
+	]
+	"25" -> "21" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "r"
+		style = "solid"
+	]
+	"24" -> "24" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[0-9]"
+		style = "solid"
+	]
+	"21" -> "17" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "u"
+		style = "solid"
+	]
+	"20" -> "24" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[0-9]"
+		style = "solid"
+	]
+	"18" -> "22" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "e"
+		style = "solid"
+	]
+	"17" -> "13" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "e"
+		style = "solid"
+	]
+	"16" -> "20" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[\-+]"
+		style = "solid"
+	]
+	"16" -> "24" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[0-9]"
+		style = "solid"
+	]
+	"15" -> "27" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[0-9a-f]"
+		style = "solid"
+	]
+	"14" -> "18" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "s"
+		style = "solid"
+	]
+	"12" -> "26" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[1-9]"
+		style = "solid"
+	]
+	"11" -> "15" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[0-9a-f]"
+		style = "solid"
+	]
+	"10" -> "14" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "l"
+		style = "solid"
+	]
+	"9" -> "5" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "u"
+		style = "solid"
+	]
+	"7" -> "11" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[0-9a-f]"
+		style = "solid"
+	]
+	"6" -> "10" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "a"
+		style = "solid"
+	]
+	"5" -> "1" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "l"
+		style = "solid"
+	]
+	"4" -> "0" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "\\"
+		style = "solid"
+	]
+	"4" -> "23" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "\""
+		style = "solid"
+	]
+	"4" -> "27" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[\\n\\000-\\t\\v-!#-\[\]-MAXCHAR]"
+		style = "solid"
+	]
+	"3" -> "7" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[0-9a-f]"
+		style = "solid"
+	]
+	"1" -> "2" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "l"
+		style = "solid"
+	]
+	"0" -> "3" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "u"
+		style = "solid"
+	]
+	"0" -> "27" [
+		fontsize = "14"
+		fontname = "Times-Roman"
+		fontcolor = "black"
+		label = "[trnfb\\/\"]"
+		style = "solid"
+	]
+}

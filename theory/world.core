@@ -1,0 +1,26 @@
+module 'world' ['add'/2,
+		'hello'/0,
+		'module_info'/0,
+		'module_info'/1]
+    attributes [%% Line 1
+		'file' =
+		    %% Line 1
+		    [{[119|[111|[114|[108|[100|[46|[101|[114|[108]]]]]]]]],1}]]
+'hello'/0 =
+    %% Line 14
+    fun () ->
+	[119|[97|[122|[122|[117|[112]]]]]]
+'add'/2 =
+    %% Line 15
+    fun (_1,_0) ->
+	call 'erlang':'+'
+	    (_1, _0)
+'module_info'/0 =
+    fun () ->
+	call 'erlang':'get_module_info'
+	    ('world')
+'module_info'/1 =
+    fun (_0) ->
+	call 'erlang':'get_module_info'
+	    ('world', _0)
+end
