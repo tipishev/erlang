@@ -7,10 +7,20 @@ run() ->
 print(S) -> io:format("~p~n", [S]).
 
 my_spawn(Mod, Func, Args) ->
-    statistics(runtime),
+    statistics(wall_clock),
     Pid = spawn(Mod, Func, Args),
-    {_, Time} = statistics(runtime),
-    io:format("it lived for ~p ms~n", [Time]),
+
+    spawn(
+      fun() ->
+          Ref = monitor(process, Pid),
+          receive
+              {'DOWN', Ref, process, Pid, _Why} ->
+                  {_, Time} = statistics(wall_clock),
+                  io:format("it lived for ~p ms~n", [Time])
+          end
+      end
+    ),
+
     Pid.
 
 red_shirt() ->
