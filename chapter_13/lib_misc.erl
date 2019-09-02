@@ -11,6 +11,7 @@ on_exit(Pid, Fun) ->
       end
     ).
 
+% start the die-together group
 start(Fs) ->
     spawn(fun() ->
               [spawn_link(F) || F <- Fs],
