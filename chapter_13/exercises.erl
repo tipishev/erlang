@@ -8,7 +8,8 @@ ex1() ->
 ex2() ->
     statistics(wall_clock),
     Pid = spawn(exercises, red_shirt, []),
-    on_exit(Pid, report_time),
+    % on_exit(Pid, report_time),
+    on_exit(Pid, fun(_Why) -> report_time(_Why) end),
     Pid.
 
 report_time(_Why) ->
