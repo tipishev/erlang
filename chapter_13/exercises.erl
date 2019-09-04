@@ -2,25 +2,41 @@
 -compile(export_all).
 
 ex1() ->
-    spawn_with_post_mortem(exercises, red_shirt, []).
+    spawn_with_post_mortem(?MODULE, red_shirt, []).
 
 ex2() ->
     statistics(wall_clock),
-    Pid = spawn(exercises, red_shirt, []),
+    Pid = spawn(?MODULE, red_shirt, []),
     % on_exit(Pid, report_time),
     lib_misc:on_exit(Pid, fun(_Why) -> report_time(_Why) end),
     Pid.
 
 ex3() ->
-    spawn_with_time(exercises, red_shirt, [], 5000).
+    spawn_with_time(?MODULE, red_shirt, [], 5000).
+
+ex4() ->
+    void.
 
 report_time(_Why) ->
   {_, Time} = statistics(wall_clock),
   io:format("it lived for ~p ms~n", [Time]).
 
-
-        
 print(S) -> io:format("~p~n", [S]).
+
+start_pingus(Period) ->
+    spawn(?MODULE, pingus, [Period]).
+
+pingus(Period) ->
+    print("I'm a-ok"),
+    receive
+        die ->
+            print("Just a flesh wound"),
+            void;
+         _ ->
+          pingus(Period)
+    after Period ->
+      pingus(Period)
+    end.
 
 spawn_with_post_mortem(Mod, Func, Args) ->
     statistics(wall_clock),
