@@ -2,7 +2,7 @@
 -compile(export_all).
 
 ex1() ->
-    my_spawn(exercises, red_shirt, []).
+    spawn_with_post_mortem(exercises, red_shirt, []).
 
 ex2() ->
     statistics(wall_clock),
@@ -12,7 +12,7 @@ ex2() ->
     Pid.
 
 ex3() ->
-    spawn_with_time(exercises, red_shirt, [], 3000).
+    spawn_with_time(exercises, red_shirt, [], 5000).
 
 report_time(_Why) ->
   {_, Time} = statistics(wall_clock),
@@ -22,7 +22,7 @@ report_time(_Why) ->
         
 print(S) -> io:format("~p~n", [S]).
 
-my_spawn(Mod, Func, Args) ->
+spawn_with_post_mortem(Mod, Func, Args) ->
     statistics(wall_clock),
     Pid = spawn(Mod, Func, Args),
 
@@ -40,27 +40,24 @@ my_spawn(Mod, Func, Args) ->
     Pid.
 
 spawn_with_time(Mod, Func, Args, Time) ->
-    Pid = spawn(Mod, Func, Args),
-
-    spawn(
-      fun() ->
-          link(Pid),
-          receive
-          after Time ->
-                print("My time has come..."),
-                exit(my_time_has_come)
-          end
-      end
-    ),
-
+    link_diemer(Pid = spawn(Mod, Func, Args), Time),
     Pid.
 
-diemer(Time) ->
-    receive
-    after Time ->
-          print("My time has come..."),
-          exit(my_time_has_come)
-    end.
+link_diemer(Pid, Time) ->
+    spawn(
+
+    fun() ->
+
+        link(Pid),
+
+        receive
+        after Time ->
+              print("My time has come..."),
+              exit(my_time_has_come)
+        end
+
+    end
+    ).
 
 red_shirt() ->
     receive
