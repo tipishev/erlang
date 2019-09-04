@@ -1,5 +1,4 @@
 -module(exercises).
--import(lib_misc, [on_exit/2]).
 -compile(export_all).
 
 ex1() ->
@@ -9,8 +8,11 @@ ex2() ->
     statistics(wall_clock),
     Pid = spawn(exercises, red_shirt, []),
     % on_exit(Pid, report_time),
-    on_exit(Pid, fun(_Why) -> report_time(_Why) end),
+    lib_misc:on_exit(Pid, fun(_Why) -> report_time(_Why) end),
     Pid.
+
+ex3() ->
+    spawn_with_timeout(exercises, red_shirt, [], 3000).
 
 report_time(_Why) ->
   {_, Time} = statistics(wall_clock),
@@ -36,6 +38,16 @@ my_spawn(Mod, Func, Args) ->
     ),
 
     Pid.
+
+spawn_with_time(Mod, Func, Args, Time) ->
+    Pid = spawn(Mod, Func, Args).
+    
+diemer(Time) ->
+    receive
+    after Time ->
+          print("My time has come..."),
+          exit(my_time_has_come)
+    end.
 
 red_shirt() ->
     receive
