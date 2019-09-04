@@ -12,7 +12,7 @@ ex2() ->
     Pid.
 
 ex3() ->
-    spawn_with_timeout(exercises, red_shirt, [], 3000).
+    spawn_with_time(exercises, red_shirt, [], 3000).
 
 report_time(_Why) ->
   {_, Time} = statistics(wall_clock),
@@ -40,8 +40,9 @@ my_spawn(Mod, Func, Args) ->
     Pid.
 
 spawn_with_time(Mod, Func, Args, Time) ->
-    Pid = spawn(Mod, Func, Args).
-    
+    spawn(exercises, diemer, [Time]),
+    spawn(Mod, Func, Args).
+
 diemer(Time) ->
     receive
     after Time ->
