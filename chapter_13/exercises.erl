@@ -40,8 +40,20 @@ my_spawn(Mod, Func, Args) ->
     Pid.
 
 spawn_with_time(Mod, Func, Args, Time) ->
-    spawn(exercises, diemer, [Time]),
-    spawn(Mod, Func, Args).
+    Pid = spawn(Mod, Func, Args),
+
+    spawn(
+      fun() ->
+          link(Pid),
+          receive
+          after Time ->
+                print("My time has come..."),
+                exit(my_time_has_come)
+          end
+      end
+    ),
+
+    Pid.
 
 diemer(Time) ->
     receive
