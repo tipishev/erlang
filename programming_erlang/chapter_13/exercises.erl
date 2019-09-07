@@ -16,31 +16,30 @@ ex3() ->
 
 ex4() ->
     Period = 5000,
-    Pingus = start_pingus(Period),
-    pacemake_pingus(Pingus, Period).
+    pacemake(pingus, [Period]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO generalize away from pingus
-pacemake_pingus(Pid, Period) ->
-    spawn(?MODULE, keep_alive, [Pid, Period]).
+pacemake(Fun, Args) ->
+    spawn(?MODULE, keep_alive, [Fun, Args]).
 
-% TODO generalize away from pingus
-keep_alive(Pid, Period) ->
+% TODO parametrize module?
+keep_alive(Fun, Args) ->
+    case whereis(Fun) of
+        undefined ->
+            Pid = spawn(?MODULE, Fun, Args),
+            register(Fun, Pid);  % no atomic clash, neat
+        Pid -> Pid
+    end,
     Ref = monitor(process, Pid),
     receive
         {'DOWN', Ref, process, Pid, Why} ->
             io:format("Reviving after ~p suddenly ~p~n", [Pid, Why]),
-            NewPid = start_pingus(Period),
-            keep_alive(NewPid, Period)
+            NewPid = spawn(?MODULE, Fun, Args),
+            register(Fun, NewPid),  % no atomic clash, neat
+            keep_alive(Fun, Args)
     end.
             
-
-start_pingus(Period) ->
-    Pid = spawn(?MODULE, pingus, [Period]),
-    register(pingus, Pid),  % fails with badarg on dupe
-    Pid.
-
 pingus(Period) ->
     print("Ah-ah-ah-ah staying alive"),
     receive
