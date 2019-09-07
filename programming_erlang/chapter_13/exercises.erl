@@ -15,33 +15,30 @@ ex3() ->
     spawn_with_time(?MODULE, red_shirt, [], 5000).
 
 ex4() ->
-    void.
+    Period = 5000,
+    Pingus = start_pingus(Period),
+    pacemake_pingus(Pingus, Period).
 
-report_time(_Why) ->
-  {_, Time} = statistics(wall_clock),
-  io:format("it lived for ~p ms~n", [Time]).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-print(S) -> io:format("~p~n", [S]).
+% TODO generalize away from pingus
+pacemake_pingus(Pid, Period) ->
+    spawn(?MODULE, keep_alive, [Pid, Period]).
 
-pacemake_pingus(Period) -> % FIXME am I leaking processes?
-    spawn(
-        fun() ->
-            Pid = pacemake_pingus(whereis(pingus), Period),
-            Ref = monitor(process, Pid),
-            receive
-                {'DOWN', Ref, process, Pid, _Why} ->
-                    pacemake_pingus(Period)
-            end
-        end
-    ).
-
-pacemake_pingus(undefined, Period) ->
-    start_pingus(Period);
-pacemake_pingus(Pid, _Period) ->
-    Pid.
+% TODO generalize away from pingus
+keep_alive(Pid, Period) ->
+    Ref = monitor(process, Pid),
+    receive
+        {'DOWN', Ref, process, Pid, Why} ->
+            io:format("Reviving after ~p suddenly ~p~n", [Pid, Why]),
+            NewPid = start_pingus(Period),
+            keep_alive(NewPid, Period)
+    end.
+            
 
 start_pingus(Period) ->
-    register(pingus, Pid = spawn(?MODULE, pingus, [Period])),
+    Pid = spawn(?MODULE, pingus, [Period]),
+    register(pingus, Pid),  % fails with badarg on dupe
     Pid.
 
 pingus(Period) ->
@@ -55,6 +52,15 @@ pingus(Period) ->
     after Period ->
       pingus(Period)
     end.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+report_time(_Why) ->
+  {_, Time} = statistics(wall_clock),
+  io:format("it lived for ~p ms~n", [Time]).
+
+print(S) -> io:format("~p~n", [S]).
+
 
 spawn_with_post_mortem(Mod, Func, Args) ->
     statistics(wall_clock),
