@@ -23,10 +23,26 @@ report_time(_Why) ->
 
 print(S) -> io:format("~p~n", [S]).
 
+pacemake_pingus(Period) -> % FIXME am I leaking processes?
+    spawn(
+        fun() ->
+            Pid = pacemake_pingus(whereis(pingus), Period),
+            Ref = monitor(process, Pid),
+            receive
+                {'DOWN', Ref, process, Pid, _Why} ->
+                    pacemake_pingus(Period)
+            end
+        end
+    ).
+
+pacemake_pingus(undefined, Period) ->
+    start_pingus(Period);
+pacemake_pingus(Pid, _Period) ->
+    Pid.
+
 start_pingus(Period) ->
-    Pid = spawn(?MODULE, pingus, [Period]),
-    register(pingus, Pid), % cool, no clash
-    "Pingus is a-rockin".
+    register(pingus, Pid = spawn(?MODULE, pingus, [Period])),
+    Pid.
 
 pingus(Period) ->
     print("Ah-ah-ah-ah staying alive"),
