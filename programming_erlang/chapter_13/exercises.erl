@@ -24,15 +24,17 @@ report_time(_Why) ->
 print(S) -> io:format("~p~n", [S]).
 
 start_pingus(Period) ->
-    spawn(?MODULE, pingus, [Period]).
+    Pid = spawn(?MODULE, pingus, [Period]),
+    register(pingus, Pid), % cool, no clash
+    "Pingus is a-rockin".
 
 pingus(Period) ->
-    print("I'm a-ok"),
+    print("Ah-ah-ah-ah staying alive"),
     receive
         die ->
             print("Just a flesh wound"),
             void;
-         _ ->
+         _Any ->
           pingus(Period)
     after Period ->
       pingus(Period)
