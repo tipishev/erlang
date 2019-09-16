@@ -18,6 +18,9 @@ ex4() ->
     Period = 5000,
     pacemake(pingus, [Period]).
 
+ex5() ->
+    42.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 pacemake(Fun, Args) ->
