@@ -1,15 +1,21 @@
 -module(exercises).
+-import(lib_misc, [on_exit/2]).
+
 -compile(export_all).
 
 ex1() ->
-    spawn_with_post_mortem(?MODULE, red_shirt, []).
+    RedShirt = spawn_with_post_mortem(?MODULE, red_shirt, []),
+    RedShirt ! missfire,
+    RedShirt ! bullet.
 
 ex2() ->
-    statistics(wall_clock),
-    Pid = spawn(?MODULE, red_shirt, []),
-    % on_exit(Pid, report_time),
-    lib_misc:on_exit(Pid, fun(_Why) -> report_time(_Why) end),
-    Pid.
+    RedShirt = spawn(?MODULE, red_shirt, []),
+    {TimeOfSpawn, _} = statistics(wall_clock),
+    on_exit(RedShirt, fun(CauseOfDeath) ->
+                              report_time(CauseOfDeath, TimeOfSpawn)
+                      end),
+    RedShirt ! missfire,
+    RedShirt ! bullet.
 
 ex3() ->
     spawn_with_time(?MODULE, red_shirt, [], 5000).
@@ -47,7 +53,7 @@ pingus(Period) ->
     print("Ah-ah-ah-ah staying alive"),
     receive
         die ->
-            print("Just a flesh wound"),
+            print("Just a flesh wound."),
             void;
          _Any ->
           pingus(Period)
@@ -57,29 +63,32 @@ pingus(Period) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-report_time(_Why) ->
-  {_, Time} = statistics(wall_clock),
-  io:format("it lived for ~p ms~n", [Time]).
+report_time(CauseOfDeath, TimeOfSpawn) ->
+  {TimeOfDeath, _} = statistics(wall_clock),
+  io:format("it lived for ~p ms and died of ~p~n",
+            [TimeOfDeath - TimeOfSpawn, CauseOfDeath]).
 
 print(S) -> io:format("~p~n", [S]).
 
 
 spawn_with_post_mortem(Mod, Func, Args) ->
-    statistics(wall_clock),
-    Pid = spawn(Mod, Func, Args),
+
+    SpawnedProcess = spawn(Mod, Func, Args),
+    {TimeOfSpawn, _} = statistics(wall_clock),
 
     spawn(
       fun() ->
-          Ref = monitor(process, Pid),
+          MonitorRef = monitor(process, SpawnedProcess),
           receive
-              {'DOWN', Ref, process, Pid, _Why} ->
-                  {_, Time} = statistics(wall_clock),
-                  io:format("it lived for ~p ms~n", [Time])
+              {'DOWN', MonitorRef, process, SpawnedProcess, {CauseOfDeath, _}} ->
+                  {TimeOfDeath, _} = statistics(wall_clock),
+                  io:format("it lived for ~p ms and died of ~p~n",
+                            [TimeOfDeath - TimeOfSpawn, CauseOfDeath])
           end
       end
     ),
 
-    Pid.
+    SpawnedProcess.
 
 spawn_with_time(Mod, Func, Args, Time) ->
     link_diemer(Pid = spawn(Mod, Func, Args), Time),
@@ -94,7 +103,7 @@ link_diemer(Pid, Time) ->
 
         receive
         after Time ->
-              print("My time has come..."),
+              print("My time has come."),
               exit(my_time_has_come)
         end
 
@@ -103,8 +112,8 @@ link_diemer(Pid, Time) ->
 
 red_shirt() ->
     receive
-        bullet -> error('I am dead lol');
+        bullet -> error('Just a flesh wound.');
         _ ->
-            print("still alive"),
+            print("still alive :P" ),
             red_shirt()
     end.
