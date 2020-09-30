@@ -18,45 +18,42 @@ ex2() ->
     RedShirt ! bullet.
 
 ex3() ->
-    spawn_with_time(?MODULE, red_shirt, [], 5000).
+    RedShirt = spawn_with_timer(?MODULE, red_shirt, [], _TimeToDie=7000),
+    RedShirt ! missfire.
 
 ex4() ->
-    Period = 5000,
-    pacemake(pingus, [Period]).
+    Pid=spawn(?MODULE, pingus, [5000]),
+    print(Pid),
+    keep_alive(Pid).
 
 ex5() ->
     42.
 
+ex6() ->
+    42.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-pacemake(Fun, Args) ->
-    spawn(?MODULE, keep_alive, [Fun, Args]).
+keep_alive(Pid) -> % TODO  use registered name
+    spawn(
 
-% TODO parametrize module?
-keep_alive(Fun, Args) ->
-    case whereis(Fun) of
-        undefined ->
-            Pid = spawn(?MODULE, Fun, Args),
-            register(Fun, Pid);  % no atomic clash, neat
-        Pid -> Pid
-    end,
-    Ref = monitor(process, Pid),
-    receive
-        {'DOWN', Ref, process, Pid, Why} ->
-            io:format("Reviving after ~p suddenly ~p~n", [Pid, Why]),
-            NewPid = spawn(?MODULE, Fun, Args),
-            register(Fun, NewPid),  % no atomic clash, neat
-            keep_alive(Fun, Args)
-    end.
-            
+      fun() ->
+        MonitorRef = monitor(process, Pid),
+        receive
+            {'DOWN', MonitorRef, process, Pid, _Why} ->
+                register(pingus, NewPid = spawn(?MODULE, pingus, [5000])),
+                print("revived as "),
+                print(NewPid)
+        end
+
+    end).
+
 pingus(Period) ->
-    print("Ah-ah-ah-ah staying alive"),
+    io:format("Ah-ah-ah-ah staying alive, ~p~n", [self()]),
     receive
         die ->
             print("Just a flesh wound."),
-            void;
-         _Any ->
-          pingus(Period)
+            void
     after Period ->
       pingus(Period)
     end.
@@ -90,11 +87,13 @@ spawn_with_post_mortem(Mod, Func, Args) ->
 
     SpawnedProcess.
 
-spawn_with_time(Mod, Func, Args, Time) ->
-    link_diemer(Pid = spawn(Mod, Func, Args), Time),
+spawn_with_timer(Mod, Func, Args, TimeToDie) ->
+    link_diemer(Pid = spawn(Mod, Func, Args), TimeToDie),
+    io:format("Will kill ~p in ~p ms~n",
+               [Pid, TimeToDie]),
     Pid.
 
-link_diemer(Pid, Time) ->
+link_diemer(Pid, TimeToDie) ->
     spawn(
 
     fun() ->
@@ -102,9 +101,9 @@ link_diemer(Pid, Time) ->
         link(Pid),
 
         receive
-        after Time ->
+        after TimeToDie ->
               print("My time has come."),
-              exit(my_time_has_come)
+              exit(my_time_has_come)  % should kill the linked lh
         end
 
     end
