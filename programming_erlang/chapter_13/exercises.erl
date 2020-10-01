@@ -33,11 +33,10 @@ ex6() ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 pacemake_spawn(Module, Function, Args) ->
-    PayloadPid = spawn(Module, Function, Args),
     spawn(
       fun() ->
         % why does it have to be inside spawn?
-        MonitorRef = monitor(process, PayloadPid),  % TODO use registered name
+        MonitorRef = monitor(process, PayloadPid = spawn(Module, Function, Args)),  % TODO use registered name
         receive
             {'DOWN', MonitorRef, process, PayloadPid, _Why} ->
                 pacemake_spawn(Module, Function, Args)
