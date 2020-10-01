@@ -25,7 +25,10 @@ ex4() ->
     pacemake_spawn(?MODULE, pingus, [5000]).
 
 ex5() ->
-    42.
+    First = spawn(?MODULE, pingus, [5000]),
+    Second = spawn(?MODULE, pingus, [5000]),
+    Third = spawn(?MODULE, pingus, [5000]).
+
 
 ex6() ->
     42.
@@ -35,15 +38,14 @@ ex6() ->
 pacemake_spawn(Module, Function, Args) ->
     spawn(
       fun() ->
-        % why does it have to be inside spawn?
-        MonitorRef = monitor(process, PayloadPid = spawn(Module, Function, Args)),  % TODO use registered name
+        MonitorRef = monitor(process, PayloadPid = spawn(Module, Function, Args)),
+        register(pacemade, PayloadPid),
         receive
             {'DOWN', MonitorRef, process, PayloadPid, _Why} ->
                 pacemake_spawn(Module, Function, Args)
         end
       end
     ).
-
 
 pingus(Period) ->
     io:format("Ah-ah-ah-ah ~p staying alive.~n", [self()]),
