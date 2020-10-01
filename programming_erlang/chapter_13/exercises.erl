@@ -22,9 +22,7 @@ ex3() ->
     RedShirt ! missfire.
 
 ex4() ->
-    Pid=spawn(?MODULE, pingus, [5000]),
-    print(Pid),
-    keep_alive(Pid).
+    pacemake_spawn(?MODULE, pingus, [5000]).
 
 ex5() ->
     42.
@@ -34,22 +32,22 @@ ex6() ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-keep_alive(Pid) -> % TODO  use registered name
+pacemake_spawn(Module, Function, Args) ->
+    PayloadPid = spawn(Module, Function, Args),
     spawn(
-
       fun() ->
-        MonitorRef = monitor(process, Pid),
+        % why does it have to be inside spawn?
+        MonitorRef = monitor(process, PayloadPid),  % TODO use registered name
         receive
-            {'DOWN', MonitorRef, process, Pid, _Why} ->
-                register(pingus, NewPid = spawn(?MODULE, pingus, [5000])),
-                print("revived as "),
-                print(NewPid)
+            {'DOWN', MonitorRef, process, PayloadPid, _Why} ->
+                pacemake_spawn(Module, Function, Args)
         end
+      end
+    ).
 
-    end).
 
 pingus(Period) ->
-    io:format("Ah-ah-ah-ah staying alive, ~p~n", [self()]),
+    io:format("Ah-ah-ah-ah ~p staying alive.~n", [self()]),
     receive
         die ->
             print("Just a flesh wound."),
