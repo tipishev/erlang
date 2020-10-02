@@ -30,7 +30,29 @@ ex5() ->
                || Name <- [potus, flotus, scotus] ]).
 
 ex6() ->
-    42.
+    Pid = group_spawn(),
+    print("made a group spawn"),
+    print(Pid),
+    on_exit(Pid, fun(_Why) -> ex6() end).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+group_spawn() ->
+    spawn (
+      fun () ->
+
+        spawn_link(?MODULE, pingus, [5000]),
+        spawn_link(?MODULE, pingus, [5000]),
+
+        % to never exit
+        receive
+            after
+                infinity -> true
+        end
+
+      end
+).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
