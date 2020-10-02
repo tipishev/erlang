@@ -1,5 +1,5 @@
 -module(user_default).
--compile(export_all).
+-export([hello/0, clear/0]).
 
 hello() ->
     "Hello Tim, how are you?".
