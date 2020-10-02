@@ -1,9 +1,16 @@
 -module(kvs).
 -export([start/0, store/2, lookup/1]).
 
-% an exercise in type-checking
+% an exercise in typing
 -spec start() -> true.
--spec store(string(), string()) -> true.
+-spec store(key(), value()) -> true.
+-spec lookup(key()) -> value().
+
+-spec rpc(query()) -> true | value().
+
+-type key() :: string().
+-type value() :: any().
+-type query() :: {store, key(), value()} | {lookup, key()}.
 
 % exported
 start() -> register(kvs, spawn(fun() -> loop() end)).
