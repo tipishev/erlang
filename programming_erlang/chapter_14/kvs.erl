@@ -25,7 +25,7 @@ rpc(Query) ->
             Reply
     end.
 
-% main loop
+% main loop, acts as kvs server when spawned
 loop() ->
     receive
         {From, {store, Key, Value}} ->
