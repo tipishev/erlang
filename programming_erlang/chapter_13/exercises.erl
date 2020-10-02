@@ -22,27 +22,26 @@ ex3() ->
     RedShirt ! missfire.
 
 ex4() ->
-    pacemake_spawn(?MODULE, pingus, [5000]).
+    pacemake_spawn(pacemade, ?MODULE, pingus, [5000]).
 
 ex5() ->
-    First = spawn(?MODULE, pingus, [5000]),
-    Second = spawn(?MODULE, pingus, [5000]),
-    Third = spawn(?MODULE, pingus, [5000]).
-
+    io:format("Spawned Potus (~p), Flotus (~p), and Scotus (~p)~n",
+              [pacemake_spawn(Name, ?MODULE, pingus, [5000])
+               || Name <- [potus, flotus, scotus] ]).
 
 ex6() ->
     42.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-pacemake_spawn(Module, Function, Args) ->
+pacemake_spawn(Name, Module, Function, Args) ->
     spawn(
       fun() ->
         MonitorRef = monitor(process, PayloadPid = spawn(Module, Function, Args)),
-        register(pacemade, PayloadPid),
+        register(Name, PayloadPid),
         receive
             {'DOWN', MonitorRef, process, PayloadPid, _Why} ->
-                pacemake_spawn(Module, Function, Args)
+                pacemake_spawn(Name, Module, Function, Args)
         end
       end
     ).
