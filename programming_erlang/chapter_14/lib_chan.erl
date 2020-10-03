@@ -1,7 +1,8 @@
 -module(lib_chan).
 -export([cast/2, start_server/0, start_server/1,
          connect/5, disconnect/1, rpc/2]).
--import(list, [map/2, member/2, foreach/2]).
+-import(lists, [map/2, member/2, foreach/2]).
+-import(lib_chan_mm, [send/2, close/1]).
 
 %%---------------------------------------------
 %% Server code
@@ -58,5 +59,137 @@ start_port_server(Port, ConfigData) ->
       4).  % what are 100 and 4?
 
 start_port_instance(Socket, ConfigData) ->
+    S = self(),
+    Controller = spawn_link(
+       fun() -> start_erl_port_server(S, ConfigData) end),
+    lib_chan_mm:loop(Socket, Controller).
 
+start_erl_port_server(MM, ConfigData) ->
+    receive
+        {chan, MM, {startService, Mod, ArgC}} ->
+            case get_service_definition(Mod, ConfigData) of
+                {yes, Pwd, MFA} ->
+                    case Pwd of
+                        none ->
+                                send(MM, ack),
+                                really_start(MM, ArgC, MFA);
+                        _ ->
+                                do_authentication(Pwd, MM, ArgC, MFA)
+                    end;
+                no ->
+                    io:format("sending bad service~n"),
+                    send(MM, badService),
+                    close(MM)
+            end;
+        Any ->
+            io:format("*** ErL port Server got: ~p ~p~n", [MM, Any]),
+            exit({protocolViolation, Any})
+    end.
 
+do_authentication(Pwd, MM, ArgC, MFA) ->
+    C = lib_chan_auth:make_challenge(),
+    send(MM, {challenge, C}),
+    receive
+        {chan, MM, {response, R}} ->
+            case lib_chan_auth:is_response_correct(C, R, Pwd) of
+                true ->
+                    send(MM, ack),
+                    really_start(MM, ArgC, MFA);
+                false ->
+                    send(MM, authFail),
+                    close(MM)
+            end
+    end.
+
+really_start(MM, ArgC, {Mod, Func, ArgS}) ->
+    %% auth worked, so now we start
+    case (catch apply(Mod, Func, [MM, ArgC, ArgS])) of
+        {'EXIT', normal} -> true;
+        {'EXIT', Why} ->
+            io:format("server error:~p~n", [Why]);
+        Why ->
+            io:format(
+              "server error should die with exit(normal) "
+              "was:~p~n", [Why]
+             )
+    end.
+
+%% get_service_definition(Name, ConfigData)
+
+get_service_definition(
+  Mod, [{service, Mod, password, Pwd, mfa, M, F, A}|_]) ->
+    {yes, Pwd, {M, F, A}};
+get_service_definition(Name, [_|T]) ->
+    get_service_definition(Name, T);
+get_service_definition(_, []) ->
+    no.
+
+%% Client connection code
+%% connect(...) -> {ok , MM} | Error
+
+connect(Host, Port, Service, Secret, ArgC) ->
+    S = self(),
+    MM = spawn(fun() -> connect(S, Host, Port) end),
+    receive
+        {MM, ok} ->
+            case authenticate(MM, Service, Secret, ArgC) of
+                ok -> {ok, MM};
+                Error -> Error
+             end;
+        {MM, Error} ->
+            Error
+    end.
+
+connect(Parent, Host, Port) ->
+    case lib_chan_cs:start_raw_client(Host, Port, 4) of
+        {ok, Socket} ->
+            Parent ! {self(), ok},
+            lib_chan_mm:loop(Socket, Parent);
+        Error ->
+            Parent ! {self(), Error}
+    end.
+
+authenticate(MM, Service, Secret, ArgC) ->
+    send(MM, {startService, Service, ArgC}),
+    %% we should get back a challenge or an ack or closed socket
+    receive
+        {chan, MM, ack} ->
+            ok;
+        {chan, MM, {challenge, C}} ->
+            R = lib_chan_autn:make_response(C, Secret),
+            send(MM, {response, R}),
+            receive
+                {chan, MM, ack} ->
+                    ok;
+                {chan, MM, authFail} ->
+                    wait_close(MM),
+                    {error, authFail};
+                Other ->
+                    {error, Other}
+            end;
+        {chan, MM, badService} ->
+            wait_close(MM),
+            {error, badService};
+        Other ->
+            {error, Other}
+    end.
+
+wait_close(MM) ->
+    receive
+        {chan_closed, MM} -> true
+    after 5000 ->
+              io:format("**error lib_chan~n"),
+              true
+    end.
+
+disconnect(MM) -> close(MM).
+
+rpc(MM, Q) ->
+    send(MM, Q),
+    receive
+        {chan, MM, Reply} ->
+            Reply
+    end.
+
+cast(MM, Q) ->
+    send(MM, Q).
