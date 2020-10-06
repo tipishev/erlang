@@ -1,10 +1,11 @@
 -module(mod_math).
 -export([run/3]).
 
+% as specified in the service section of config
 run(MM, ArgC, ArgS) ->
     io:format("mod_math:run_starting~n"
               "ArgC = ~p ArgS=~p~n", [ArgC, ArgS]),
-    loop(MM).
+    loop(MM). % ArgC and ArgS are ignored
 
 loop(MM) ->
     receive
@@ -16,7 +17,7 @@ loop(MM) ->
             loop(MM);
         {chan_closed, MM} ->
             io:format("mod_math stopping"),
-            exit(normal)
+            exit(normal)  % the standard way to exit
     end.
 
 fac(0) -> 1;
