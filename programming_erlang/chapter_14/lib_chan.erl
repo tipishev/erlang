@@ -1,7 +1,7 @@
 -module(lib_chan).
 -export([cast/2, start_server/0, start_server/1,
          connect/5, disconnect/1, rpc/2]).
--import(lists, [map/2, member/2, foreach/2]).
+-import(lists, [map/2]).
 -import(lib_chan_mm, [send/2, close/1]).
 
 %%---------------------------------------------
@@ -159,6 +159,7 @@ connect(Host, Port, Service, Secret, ArgC) ->
 
 % assumes the secret has worked
 connect(Parent, Host, Port) ->
+    % uses case to determine success
     case lib_chan_cs:start_raw_client(Host, Port, 4) of
         {ok, Socket} ->
             Parent ! {self(), ok},
