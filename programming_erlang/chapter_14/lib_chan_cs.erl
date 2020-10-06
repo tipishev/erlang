@@ -65,6 +65,7 @@ cold_start(Master, Port, Fun, Max, PacketLength) ->
             Master ! {self(), ok},
             New = start_accept(Listen, Fun),
             %% ready to run now
+            io:format("Starting socket_loop Listen: ~p, New: ~p, Fun: ~p, Max: ~p", [Listen, New, Fun, Max]),
             socket_loop(Listen, New, [], Fun, Max);
         Error ->
             Master ! {self(), Error}
