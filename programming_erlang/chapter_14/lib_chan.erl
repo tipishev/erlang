@@ -175,7 +175,7 @@ authenticate(MM, Service, Secret, ArgC) ->
         {chan, MM, ack} ->
             ok;
         {chan, MM, {challenge, C}} ->  % challenge-response dialogue
-            R = lib_chan_autn:make_response(C, Secret),
+            R = lib_chan_auth:make_response(C, Secret),
             send(MM, {response, R}),
             receive
                 {chan, MM, ack} ->

@@ -45,7 +45,7 @@ loop1(Socket, Pid, Trace) ->
 
         {'EXIT', Pid, Why} ->
             trace_it(Trace, {controllingProcessExit, Why}),
-            get_tcp:close(Socket);
+            gen_tcp:close(Socket);
         {setController, Pid1} ->
             trace_it(Trace, {changedController, Pid}),
             loop1(Socket, Pid1, Trace);
@@ -54,10 +54,10 @@ loop1(Socket, Pid, Trace) ->
             gen_tcp:close(Socket);
         close ->
             trace_it(Trace, closedByClient),
-            get_tcp:close(Socket);
+            gen_tcp:close(Socket);
         {send, Term} ->
             trace_it(Trace, {sendingMessage, Term}),
-            get_tcp:send(Socket, term_to_binary(Term)),
+            gen_tcp:send(Socket, term_to_binary(Term)),
             loop1(Socket, Pid, Trace);
         UUg ->
             io:format("lib_chan_mm: protocol error: ~p~n", [UUg]),

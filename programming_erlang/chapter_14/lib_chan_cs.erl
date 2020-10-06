@@ -5,7 +5,7 @@
 -export([children/1]).
 
 start_raw_client(Host, Port, PacketLength) ->
-    get_tcp:connect(Host, Port, [binary, {active, true}, {packet, PacketLength}]).
+    gen_tcp:connect(Host, Port, [binary, {active, true}, {packet, PacketLength}]).
 
 start_raw_server(Port, Fun, Max, PacketLength) ->
     Name = port_name(Port),
@@ -51,12 +51,15 @@ port_name(Port) when is_integer(Port) ->
 cold_start(Master, Port, Fun, Max, PacketLength) ->
     process_flag(trap_exit, true),  % become a system process, catch signals
     io:format("Starting a port server on ~p...~n", [Port]),
-    case get_tcp:listen(Port, [binary,
-                               %% {dontroute, true},
-                               {nodelay, true},  % what's that?
-                               {packet, PacketLength},
-                               {reuseaddr, true},
-                               {active, true}]) of
+    case gen_tcp:listen(Port,
+                        [
+                         binary,
+                         %% {dontroute, true},
+                         {nodelay, true},  % what's that?
+                         {packet, PacketLength},
+                         {reuseaddr, true},
+                         {active, true}
+                        ]) of
         {ok, Listen} ->
             io:format("Listening to:~p~n", [Listen]),
             Master ! {self(), ok},
@@ -105,7 +108,7 @@ start_accept(Listen, Fun) ->
     spawn_link(fun() -> start_child(self(), Listen, Fun) end).
 
 start_child(Parent, Listen, Fun) ->
-    case get_tcp:accept(Listen) of
+    case gen_tcp:accept(Listen) of
         {ok, Socket} ->
             Parent ! {istarted, self()},
             % TODO handle posix() errors: http://erlang.org/doc/man/inet.html#type-posix
