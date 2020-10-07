@@ -18,6 +18,9 @@
 ### Miscellaneous
 - [ ] [Beam Wisdoms](http://beam-wisdoms.clau.se/en/latest/)
 
+### Videos
+- [ ] [Learning Erlang - Easier than you think](https://www.youtube.com/watch?v=OCkL9z8IxOI)
+
 ## Directories
 
 ### programming_erlang
