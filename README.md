@@ -14,6 +14,7 @@
 - [ ] [Erlang module](http://erlang.org/doc/man/erlang.html)
 - [ ] [Erl](http://erlang.org/doc/man/erl.html)
 - [ ] [ERTS PDF](http://erlang.org/doc/apps/erts/erts.pdf)
+- [ ] [Rebar3](https://www.rebar3.org/docs/)
 
 ### Miscellaneous
 - [ ] [Beam Wisdoms](http://beam-wisdoms.clau.se/en/latest/)
