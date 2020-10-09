@@ -21,13 +21,13 @@ make_html_list(List) ->
      map(fun(Element) -> ["<li>", Element, "</li>\n"] end, List),
      "</ul>\n"].
 
-gather_urls("<a href" ++ T, L) ->
-    {Url, T1} = collect_url_body(T, reverse("<a href")),
-    gather_urls(T1, [Url|L]);
-gather_urls([_|T], L) ->
-    gather_urls(T, L);
-gather_urls([], L) -> L.
+gather_urls("<a href" ++ Tail, List) ->
+    {Url, Tail1} = collect_url_body(Tail, reverse("<a href")),
+    gather_urls(Tail1, [Url|List]);
+gather_urls([_|Tail], List) ->
+    gather_urls(Tail, List);
+gather_urls([], List) -> List.
 
-collect_url_body("</a>" ++ T, L) -> {reverse(L, "</a>"), T};
-collect_url_body([H|T], L) -> collect_url_body(T, [H|L]);
+collect_url_body("</a>" ++ Tail, List) -> {reverse(List, "</a>"), Tail};
+collect_url_body([Head|Tail], List) -> collect_url_body(Tail, [Head|List]);
 collect_url_body([], _) -> {[], []}.
