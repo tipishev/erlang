@@ -1,7 +1,7 @@
 -module(lib_misc).
 -export([unconsult/2, file_size_and_type/1, ls/1]).
 
--include_lib("/usr/lib/erlang/lib/kernel-5.4.1/include/file.hrl").
+-include_lib("kernel/include/file.hrl").
 
 unconsult(Filename, TermsList) ->
     {ok, F} = file:open(Filename, write),
@@ -15,7 +15,6 @@ file_size_and_type(File) ->
         _ ->
             error
     end.
-
 
 ls(Dir) ->
     {ok, Filenames} = file:list_dir(Dir),
