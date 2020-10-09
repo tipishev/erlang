@@ -2,7 +2,7 @@
 -export([nano_get_url/0, nano_get_url/1]).
 
 nano_get_url() ->
-    nano_get_url("erlang.se").
+    nano_get_url("bash.org").
 
 nano_get_url(Host) ->
     % Any = gen_tcp:connect(Host, 80,[binary, {packet, 0}]),
