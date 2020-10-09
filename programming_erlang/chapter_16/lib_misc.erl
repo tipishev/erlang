@@ -1,5 +1,5 @@
 -module(lib_misc).
--export([unconsult/2, file_size_and_type/1]).
+-export([unconsult/2, file_size_and_type/1, ls/1]).
 
 -include_lib("/usr/lib/erlang/lib/kernel-5.4.1/include/file.hrl").
 
@@ -17,4 +17,7 @@ file_size_and_type(File) ->
     end.
 
 
-
+ls(Dir) ->
+    {ok, Filenames} = file:list_dir(Dir),
+    lists:map(fun(Filename) -> {Filename, file_size_and_type(Filename)} end,
+              lists:sort(Filenames)).
