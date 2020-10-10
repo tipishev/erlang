@@ -6,8 +6,33 @@
 -include_lib("kernel/include/file.hrl").
 
 files(Dir, ShellRegExp, IsRecursive) ->
-    AwkRegExp = xmerl:sh_to_awk(ShellRegExp).
-    reverse
-    
+    AwkRegExp = xmerl:sh_to_awk(ShellRegExp),
+    reverse(files(Dir, AwkRegExp, IsRecursive,
+                 % simply collect the files
+                 fun(File, Acc) -> [File, Acc] end, [])).
 
+files(Dir, AwkRegExp, IsRecursive, Fun, Acc) ->
+    case file:list_dir(Dir) of
+        {ok, Files} -> find_files(Files, Dir, AwkRegExp,
+                                  IsRecursive, Fun, Acc);
+        {error, _} -> Acc
+    end.
 
+find_files([File, Tail], Dir, AwkRegExp, IsRecursive, Fun, Acc) ->
+    FullPath = filename:join(Dir, File),
+    case filetype(FullPath) of 
+        regular ->
+            case re:run(FullPath, AwkRegExp, [{capture, none}]) of
+                match -> 
+                    NewAcc = Fun(FullName, Acc),
+                    find_files(Tail, Dir, AwkRegExp, IsRecursive, Fun, NewAcc);
+                nomatch -> 
+                    find_files(Tail, Dir, AwkRegExp, IsRecursive, Fun, Acc)
+            end;
+        directory ->
+            case IsRecursive of
+                true ->
+                    NewAcc = files(FullPath, AwkRegExp, IsRecursive, Fun, Acc),
+                    files(T, AwkRegExp, IsRecursive, Fun, NewAcc),
+
+    end;
