@@ -24,7 +24,7 @@ find_files([File, Tail], Dir, AwkRegExp, IsRecursive, Fun, Acc) ->
         regular ->
             case re:run(FullPath, AwkRegExp, [{capture, none}]) of
                 match -> 
-                    NewAcc = Fun(FullName, Acc),
+                    NewAcc = Fun(FullPath, Acc),
                     find_files(Tail, Dir, AwkRegExp, IsRecursive, Fun, NewAcc);
                 nomatch -> 
                     find_files(Tail, Dir, AwkRegExp, IsRecursive, Fun, Acc)
@@ -33,6 +33,23 @@ find_files([File, Tail], Dir, AwkRegExp, IsRecursive, Fun, Acc) ->
             case IsRecursive of
                 true ->
                     NewAcc = files(FullPath, AwkRegExp, IsRecursive, Fun, Acc),
-                    files(T, AwkRegExp, IsRecursive, Fun, NewAcc),
-
+                    files(Tail, AwkRegExp, IsRecursive, Fun, NewAcc);
+                false ->
+                    files(Tail, AwkRegExp, IsRecursive, Fun, Acc)
+            end;
+        error ->
+            find_files(Tail, Dir, AwkRegExp, IsRecursive, Fun, Acc)
     end;
+find_files([], _, _, _, _, A) -> A.
+
+filetype(FullPath) ->
+    case file:read_file_info(FullPath) of
+        {ok, Facts} ->
+            case Facts#file_info.type of
+                regular -> regular;
+                directory -> directory;
+                _ -> error
+            end;
+        _ ->
+            error
+    end.
