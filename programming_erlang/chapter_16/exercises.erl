@@ -1,9 +1,20 @@
 -module(exercises).
 
--export([ex1/0]).
+-export([ex1/0, ex2/0]).
 -import(filelib, [last_modified/1]).
 
 ex1() -> check_recompile(?MODULE).
+ex2() -> file_md5("lib_find.erl").
+
+%% underhood
+
+file_md5(Filename) ->
+    case file:read_file(Filename) of
+        {ok, File} ->
+            binary_to_list(erlang:md5(File));
+        {error, Reason} ->
+            {error, Reason}
+    end.
 
 check_recompile(Module) ->
     Erl = concat(Module, ".erl"),
