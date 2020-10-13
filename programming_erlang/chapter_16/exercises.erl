@@ -10,34 +10,32 @@
 ex1() -> check_recompile(?MODULE).
 ex2() -> file_md5("lib_find.erl").
 ex3() -> big_file_md5("/home/user/Downloads/archlinux-2020.10.01-x86_64.iso").
-% ex4() -> find_dupes(".").
-ex4() -> count_characters("kalendula").
+ex4() -> find_dupes(".").
+% ex4() -> count_characters("kalendula").
 
 %% underhood
 
-% find_dupes(Dir) ->
-%     Filenames = files(Dir, "*.beam", true),
-%     FilesAndMd5s = lists:map(fun(Filename) -> {Filename, file_md5(Filename)} end, Filenames),
-%     find_dupes(FilesAndMd5s, #{}).
+find_dupes(Dir) ->
+    Filenames = files(Dir, "*.beam", true),
+    FilesAndMd5s = lists:map(fun(Filename) -> {Filename, file_md5(Filename)} end, Filenames),
+    Siblings = find_siblings(FilesAndMd5s, _Siblings=#{}),
+    maps:filter(fun (_, Dupes) -> length(Dupes) > 1 end, Siblings).
 
-% find_dupes([H|T], #{ H => N}=X) ->
-%     io:format("~p~p~p~p~n", [H, T, N, X]),
-%     42;
-%     % {Md5, Dupes} = H,
-%     % find_dupes(T, X#{ Md5 := [Filename | Dupes]  }).
-% find_dupes([], X) -> X.
+find_siblings([{Filename, Md5}|Rest], Siblings) ->
+    Dupes = maps:get(Md5, Siblings, []),
+    UpdatedSiblings = maps:put(Md5, [Filename | Dupes], Siblings),
+    find_siblings(Rest, UpdatedSiblings);
+find_siblings([], Siblings) -> Siblings.
 
-count_characters(Str) ->
-   count_characters(Str, #{}).
+% count_characters(Str) ->
+%    count_characters(Str, #{}).
 
-count_characters([H|T], #{ H := N }=X) ->
-   count_characters(T, X#{ H := N+1 });
+% count_characters([Char|Rest], Counts) ->
+%    Count = maps:get(Char, Counts, 0),
+%    count_characters(Rest, maps:put(Char, Count + 1, Counts));
 
-count_characters([H|T], X) ->
-   count_characters(T, X#{ H => 1 });
-
-count_characters([], X) ->
-        X.
+% count_characters([], X) ->
+%         X.
 
 big_file_md5(Filename) ->
     Context = erlang:md5_init(),
