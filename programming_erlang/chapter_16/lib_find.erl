@@ -22,20 +22,23 @@ find_files([File|Tail], Dir, AwkRegExp, IsRecursive, Fun, Acc) ->
     FullPath = filename:join(Dir, File),
     case filetype(FullPath) of 
         regular ->
-            case re:run(FullPath, AwkRegExp, [{capture, none}]) of
+            % io:format("~p~n", [FullPath]),
+            case (catch re:run(FullPath, AwkRegExp, [{capture, none}])) of
                 match -> 
                     NewAcc = Fun(FullPath, Acc),
                     find_files(Tail, Dir, AwkRegExp, IsRecursive, Fun, NewAcc);
                 nomatch -> 
+                    find_files(Tail, Dir, AwkRegExp, IsRecursive, Fun, Acc);
+                {'EXIT', _} ->  % for mischievous uniçodé names
                     find_files(Tail, Dir, AwkRegExp, IsRecursive, Fun, Acc)
             end;
         directory ->
             case IsRecursive of
                 true ->
                     NewAcc = files(FullPath, AwkRegExp, IsRecursive, Fun, Acc),
-                    files(Tail, AwkRegExp, IsRecursive, Fun, NewAcc);
+                    find_files(Tail, Dir, AwkRegExp, IsRecursive, Fun, NewAcc);
                 false ->
-                    files(Tail, AwkRegExp, IsRecursive, Fun, Acc)
+                    find_files(Tail, Dir, AwkRegExp, IsRecursive, Fun, Acc)
             end;
         error ->
             find_files(Tail, Dir, AwkRegExp, IsRecursive, Fun, Acc)
