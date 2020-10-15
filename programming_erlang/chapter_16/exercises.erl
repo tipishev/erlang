@@ -19,36 +19,65 @@ ex2() -> file_md5("lib_find.erl").
 ex3() -> big_file_md5("/home/user/Downloads/archlinux-2020.10.01-x86_64.iso").
 ex4() -> find_dupes(".").
 ex5() ->
-    Pid = start(),
-    Pid ! "test",
-    Pid ! "another".
+    start_md5(),
+    Md5 = get_md5("lib_find.erl"),
+    Md5 = get_md5("lib_find.erl"),
+    print(Md5),
+    stop_md5().
+
 
 %%% underhood
 
+start_md5() ->
+    register(md5, spawn(?MODULE, loop, [#{}])).
 
-% get_md5(Filename) -> Filename.
+stop_md5() ->
+    md5 ! stop.  % exit(normal) auto-unregisters.
 
-start() ->
-    spawn(?MODULE, loop, [#{}]).
+get_md5(Filename) ->
+    Pid = whereis(md5),
+    rpc(Pid, Filename).
 
 rpc(Pid, Request) ->
     Pid ! {self(), Request},
     receive
-        {Pid, Response} ->
-            Response
+        {Pid, Response} -> Response;
+        Any ->
+            io:format("received unexpected~p~n", [Any])
+    after 1000 ->
+        timeout
     end.
 
 loop(Cache) ->
     receive
-        {md5_request, Filename} ->
-            Result = file_md5(Filename),  % TODO relay error
-            io:format("Result: ~p~n", [Result]),
-            loop(Cache);
+        {From, Filename} ->
+            LastModified = filelib:last_modified(Filename),
+            case maps:find(Filename, Cache) of
+                {ok, {LastModified, Md5}} ->  % send cached
+                    print("cached out"),
+                    From ! {self(), Md5},
+                    loop(Cache);
+                {ok, {_OldLastModified, _OldMd5}} ->
+                    print("re-cached"),
+                    Md5 = file_md5(Filename),
+                    NewCache = Cache # { Filename := {LastModified, Md5}},
+                    From ! {self(), Md5},
+                    loop(NewCache);
+                error ->
+                    print("cached in"),
+                    Md5 = file_md5(Filename),
+                    From ! {self(), Md5},
+                    NewCache = Cache # { Filename => {LastModified, Md5}},
+                    loop(NewCache)
+            end;
+        stop -> exit(normal);
         Any ->
-            io:format("Received:~p~ncache:~p~n", [Any, Cache]),
+            error_logger:error_msg("Received:~p~ncache:~p~n", [Any]),
             loop(Cache)
     end.
 
+print(Message) ->
+    io:format("~p~n", [Message]).
 
 find_dupes(Dir) ->
     Filenames = files(Dir, "*.beam", true),
