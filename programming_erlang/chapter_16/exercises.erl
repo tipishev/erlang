@@ -1,19 +1,54 @@
 -module(exercises).
 
--export([ex1/0, ex2/0, ex3/0, ex4/0]).
+% user interface
+-export([ex1/0, ex2/0, ex3/0, ex4/0, ex5/0]).
+
+% local MFA export
+-export([loop/1]).
+
 
 -import(filelib, [last_modified/1]).
 -import(string, [to_lower/1]).
 
 -import(lib_find, [files/3]).
 
+-compile(export_all).
+
 ex1() -> check_recompile(?MODULE).
 ex2() -> file_md5("lib_find.erl").
 ex3() -> big_file_md5("/home/user/Downloads/archlinux-2020.10.01-x86_64.iso").
 ex4() -> find_dupes(".").
-% ex4() -> count_characters("kalendula").
+ex5() ->
+    Pid = start(),
+    Pid ! "test",
+    Pid ! "another".
 
-%% underhood
+%%% underhood
+
+
+% get_md5(Filename) -> Filename.
+
+start() ->
+    spawn(?MODULE, loop, [#{}]).
+
+rpc(Pid, Request) ->
+    Pid ! {self(), Request},
+    receive
+        {Pid, Response} ->
+            Response
+    end.
+
+loop(Cache) ->
+    receive
+        {md5_request, Filename} ->
+            Result = file_md5(Filename),  % TODO relay error
+            io:format("Result: ~p~n", [Result]),
+            loop(Cache);
+        Any ->
+            io:format("Received:~p~ncache:~p~n", [Any, Cache]),
+            loop(Cache)
+    end.
+
 
 find_dupes(Dir) ->
     Filenames = files(Dir, "*.beam", true),
@@ -27,6 +62,7 @@ find_siblings([{Filename, Md5}|Rest], Siblings) ->
     find_siblings(Rest, UpdatedSiblings);
 find_siblings([], Siblings) -> Siblings.
 
+% ex4() -> count_characters("kalendula").
 % count_characters(Str) ->
 %    count_characters(Str, #{}).
 
