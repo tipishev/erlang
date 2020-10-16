@@ -31,3 +31,6 @@ Code and exercises from Programming Erlang 2nd edition
 ### beam_book
 
 Code from https://blog.stenmans.org/theBeamBook/
+
+## Beginner Talk Ideas
+- [ ] Dispelling Superstitions with Experiments
