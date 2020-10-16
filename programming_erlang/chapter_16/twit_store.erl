@@ -1,9 +1,10 @@
 -module(twit_store).
 
-% -export([init/1, store/2, fetch/1]).
--compile(export_all).
+-export([init/1, store/2, fetch/1]).
 
 -define(TWIT_SIZE, 140).
+
+%%% Public Functions
 
 init(NumTwits) ->
     {ok, S} = file:open("twit_store", write),
@@ -11,7 +12,16 @@ init(NumTwits) ->
     file:close(S).
 
 store(TwitNum, Twit) ->
-    {ok, S} = file:open("twit_store", write).
+    AsIs = read_lines("twit_store"),
+    ToBe = replace(AsIs, TwitNum, Twit),
+    write_lines("twit_store", ToBe),
+    ok.
+
+fetch(TwitNum) ->
+    lists:nth(TwitNum + 1, read_lines("twit_store")).
+
+
+%%% Underhood
 
 write_empty_lines(_, 0) -> ok;
 write_empty_lines(S, Num) ->
@@ -40,3 +50,12 @@ writer_lines_to_device(_IoDevice, []) -> ok;
 writer_lines_to_device(IoDevice, [H|T]) ->
     io:format(IoDevice, "~s~n", [H]),
     writer_lines_to_device(IoDevice, T).
+
+replace(List, Index, Element) -> 
+    replace(List, _Current=0, Index, Element, []).
+
+replace([], _, _, _, Acc) -> lists:reverse(Acc);
+replace([_H|T], Current, Index=Current, Element, Acc) ->
+    replace(T, Current + 1, Index, Element, [Element|Acc]);
+replace([H|T], Current, Index, Element, Acc) ->
+    replace(T, Current + 1, Index, Element, [H|Acc]).
