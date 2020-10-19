@@ -14,6 +14,7 @@
 - [X] [Programming Rules](http://www.erlang.se/doc/programming_rules.shtml)
 - [ ] [Erlang module](http://erlang.org/doc/man/erlang.html)
 - [ ] [Erl](http://erlang.org/doc/man/erl.html)
+- [ ] [External Term format](https://erlang.org/doc/apps/erts/erl_ext_dist.html)
 - [ ] [ERTS PDF](http://erlang.org/doc/apps/erts/erts.pdf)
 - [ ] [Rebar3](https://www.rebar3.org/docs/)
 
