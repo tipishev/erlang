@@ -28,7 +28,7 @@
 
 - [x] Use Dialyzer plugin for Vim.
 - [ ] Find a plugin powerful enough to suggest options for `gen_tcp:listen`.
-- [ ] Set up a code formatter.
+- [ ] Set up a configurable code formatter.
 
 ## Directories
 
