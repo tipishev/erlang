@@ -23,6 +23,12 @@
 ### Videos
 - [ ] [Learning Erlang - Easier than you think](https://www.youtube.com/watch?v=OCkL9z8IxOI)
 
+## Tooling
+
+- [x] Use Dialyzer plugin for Vim.
+- [ ] Find a plugin powerful enough to suggest options for `gen_tcp:listen`.
+- [ ] Set up a code formatter.
+
 ## Directories
 
 ### programming_erlang
@@ -34,4 +40,7 @@ Code and exercises from Programming Erlang 2nd edition
 Code from https://blog.stenmans.org/theBeamBook/
 
 ## Beginner Talk Ideas
+
 - [ ] Dispelling Superstitions with Experiments
+
+> Erlang is a constantly developing language and some common advice may become less relevant. How can we confirm that they still hold? For example, when studying Erlang lists we are told that `List ++ [Element]` is less efficient than `reverse([Element|List])`. Is it still true? By how much is it less efficient? Also, "Make servers tail-recursive or you will run out of memory!" How fast will that happen? Let us build small programs to put these claims to the test and put numbers on the tribal knowledge.
