@@ -34,8 +34,13 @@ start_parallel_server(Port) ->
 
 par_connect(Listen, PidSongServer) ->
     {ok, Socket} = gen_tcp:accept(Listen),
+
+    % respawn itself to accept the next connection
     spawn(fun() -> par_connect(Listen, PidSongServer) end),
+
+    % follow the recommendation to explicitly set Socket options
     inet:setopts(Socket, [{packet,0},binary, {nodelay,true},{active, true}]),
+
     get_request(Socket, PidSongServer, []).
 
 get_request(Socket, PidSongServer, L) ->
