@@ -30,6 +30,9 @@
 - [ ] Find a plugin powerful enough to suggest options for `gen_tcp:listen`.
 - [ ] Set up a configurable code formatter.
 
+* https://tech.nextroll.com/blog/dev/2020/02/25/erlang-rebar3-format.html
+* https://notamonadtutorial.com/erlang-tooling-in-2020-b9606596353a
+
 ## Directories
 
 ### programming_erlang
