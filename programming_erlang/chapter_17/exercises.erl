@@ -1,10 +1,10 @@
 -module(exercises).
 -export([ex1/0]).
 
-% ex1() -> get_url("bash.org").
-% ex1() -> get_url("slashdot.org").
-ex1() -> get_url("ya.ru").
-% ex1() -> get_url("google.com").  % weird HTTP
+% ex1() -> get_url("bash.org"). % 200
+% ex1() -> get_url("slashdot.org"). % 301
+% ex1() -> get_url("ya.ru").  % 406
+ex1() -> get_url("google.com").  % weird HTTP version
 
 %%% Underhood
 
@@ -16,27 +16,32 @@ get_url(Host) ->
     parse_response(BinResponse).
 
 -spec parse_response(BinResponse) ->
-	Response when
-	  BinResponse :: binary(),
-	  Response :: {Status :: atom(), Content :: string()}.
+    Response when
+      BinResponse :: binary(),
+      Response :: {Status :: atom(), Content :: string()}.
 
 %% retun headers, status, body, etc. 
 parse_response(BinResponse) ->
     StringResponse = binary_to_list(BinResponse),
-    Lines = string:tokens(StringResponse, "\r\n"),
+    Lines = string:tokens(StringResponse, "\r\n"), % replace with lexemes/2
     [Header|_Rest] = Lines,
     parse_header(Header).
 
 -spec parse_header(Header:: string()) ->
     HeaderInfo :: {ok, {Code :: non_neg_integer(),
-			Message :: nonempty_string()} 
-		   | error, Error :: {unknown_protocol, nonempty_string()}}.
+                        Message :: nonempty_string()} 
+                   | error, Error :: {unknown_protocol, nonempty_string()}}.
 
 parse_header(Header) ->
-    [Protocol | [Code | Message]] = string:tokens(Header, " "),
+    [Protocol, Rest] = string:split(Header, " "),
+    [Code, Message] = string:split(Rest, " "),
     case lists:member(Protocol, ["HTTP/1.1", "HTTP/1.0"]) of
         true ->
-            {ok, {list_to_integer(Code), Message}};  % FIXME join the status message
+            {ok, {list_to_integer(Code),
+                  % % lists:join(" ", Message)
+                  Message
+                  % string:prefix(Header, Protocol)
+                 }};
         false -> 
             {error, {unknown_protocol, Protocol}}
     end.
