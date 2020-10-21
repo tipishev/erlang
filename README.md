@@ -39,6 +39,9 @@ https://www.youtube.com/watch?v=8FibGzqygo0&feature=emb_logo
 * https://robertoaloi.github.io/erlang/profiling-erlang-applications-using-redbug
 * https://blog.stenmans.org/theBeamBook/#_redbug
 
+## Deeper Theory
+* [OTP Blog](http://blog.erlang.org/)
+
 ## Directories
 
 ### programming_erlang
