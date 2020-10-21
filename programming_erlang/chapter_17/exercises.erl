@@ -1,12 +1,51 @@
 -module(exercises).
 -export([ex1/0]).
 
+% ex2
+-export([start_nano_server/0, nano_client_eval/3]).
+
 ex1() -> get_url("bash.org"). % 200
 % ex1() -> get_url("slashdot.org"). % 301
 % ex1() -> get_url("ya.ru").  % 406
 % ex1() -> get_url("google.com").  % 200, HTTP/1.0
 
 %%% Underhood
+
+%%% ex2
+start_nano_server() ->
+    {ok, Listen} = gen_tcp:listen(2345, [binary, {packet, 4},
+                                         {reuseaddr, true},
+                                         {active, true}]),
+    {ok, Socket} = gen_tcp:accept(Listen),
+    gen_tcp:close(Listen),  % to avoid receiving more connections
+    loop(Socket).
+
+loop(Socket) ->
+    receive
+        {tcp, Socket, Bin} ->
+            io:format("Server received binary = ~p~n", [Bin]),
+            MFA = {M, F, A} = binary_to_term(Bin),
+            io:format("Server (unpacked) ~p~n", [MFA]),
+            Reply = apply(M, F, A),
+            io:format("Server replying ~p~n", [Reply]),
+            gen_tcp:send(Socket, term_to_binary(Reply)),
+            loop(Socket);
+        {tcp_closed, Socket} ->
+            io:format("Server socket closed~n")
+    end.
+
+nano_client_eval(M, F, A) ->
+    {ok, Socket} = gen_tcp:connect("localhost", 2345,
+                                   [binary, {packet, 4}]),
+    ok = gen_tcp:send(Socket, term_to_binary({M, F, A})),
+    receive
+        {tcp, Socket, Bin} ->
+            io:format("Client received binary = ~p~n", [Bin]),
+            Val = binary_to_term(Bin),
+            io:format("Client result = ~p~n", [Val]),
+            gen_tcp:close(Socket)
+    end.
+
 
 
 get_url(Host) ->
