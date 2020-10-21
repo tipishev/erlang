@@ -30,7 +30,17 @@
 - [ ] Find a plugin powerful enough to suggest options for `gen_tcp:listen`.
 - [ ] Set up a configurable code formatter `rebar3 format`?
 
+* [Glass](https://github.com/klarna-incubator/glass)
+
 https://www.youtube.com/watch?v=8FibGzqygo0&feature=emb_logo
+
+## Debugging
+
+* https://robertoaloi.github.io/erlang/profiling-erlang-applications-using-redbug
+* https://blog.stenmans.org/theBeamBook/#_redbug
+
+## Deeper Theory
+* [OTP Blog](http://blog.erlang.org/)
 
 ## Directories
 
