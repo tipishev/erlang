@@ -10,6 +10,7 @@
 - [ ] [Erlang and OTP in Action](https://www.manning.com/books/erlang-and-otp-in-action)
 - [ ] [Erlang Programming](https://www.oreilly.com/library/view/erlang-programming/9780596803940/) 2009, outdated?
 - [ ] [Erlang in Anger](http://www.erlang-in-anger.com/)
+- [ ] [Études for Erlang](https://www.oreilly.com/library/view/etudes-for-erlang/9781491917657/)
 
 ### Official Docs
 - [X] [Programming Rules](http://www.erlang.se/doc/programming_rules.shtml)
