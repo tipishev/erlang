@@ -1,5 +1,5 @@
 -module(exercises).
--export([ex1/0]).
+-export([ex1/0, ex2/0]).
 
 % ex2
 -export([start_nano_server/0, nano_client_eval/3]).
@@ -8,6 +8,12 @@ ex1() -> get_url("bash.org"). % 200
 % ex1() -> get_url("slashdot.org"). % 301
 % ex1() -> get_url("ya.ru").  % 406
 % ex1() -> get_url("google.com").  % 200, HTTP/1.0
+
+ex2() ->
+    spawn(fun() -> start_nano_server() end),
+    nano_client_eval(string, reverse, ["!ylranG"]).
+
+
 
 %%% Underhood
 
