@@ -19,7 +19,35 @@ ex3() ->
 
 %%% Underhood
 
-%%% ex3
+%%% ex4
+
+-spec encrypt(PlainText) -> CypherText when
+                            PlainText :: binary(),
+                            CypherText :: binary().
+encrypt(PlainText) ->
+    crypto:start(),
+    Key = <<1:128>>,
+    IV = <<0:128>>,
+    StateEnc = crypto:crypto_init(aes_128_ctr, Key, IV, true),
+    CypherText = crypto:crypto_update(StateEnc, PlainText),
+    io:format("Encrypted ~p to ~p~n", [PlainText, CypherText]),
+    CypherText.
+    
+
+
+-spec decrypt(CypherText) -> PlainText when
+                            CypherText :: binary(),
+                            PlainText :: binary().
+decrypt(CypherText) ->
+    crypto:start(),
+    Key = <<1:128>>,
+    IV = <<0:128>>,
+    StateDec = crypto:crypto_init(aes_128_ctr, Key, IV, false),
+    PlainText = crypto:crypto_update(StateDec, CypherText),
+    io:format("Decrypted ~p to ~p~n", [CypherText, PlainText]),
+    PlainText.
+
+%%% ex3, ex4
 
 %% The server
 -spec start_udp_server() -> UdpServerPid :: pid().
@@ -40,12 +68,13 @@ udp_server(Port) ->
 
 udp_loop(Socket) ->
     receive
-        {udp, Socket, Host, Port, Bin} = Msg ->
+        {udp, Socket, Host, Port, EncBin} = Msg ->
             io:format("server received: ~p~n", [Msg]),
+            Bin = decrypt(EncBin),
             {Ref, {Module, Function, Arguments}} = binary_to_term(Bin),
             FunctionResult =apply(Module, Function, Arguments),
             Output = {Ref, FunctionResult},
-            gen_udp:send(Socket, Host, Port, term_to_binary(Output)),
+            gen_udp:send(Socket, Host, Port, encrypt(term_to_binary(Output))),
             udp_loop(Socket)
     end.
 
@@ -63,7 +92,7 @@ udp_client(Module, Function, Args) ->
     io:format("client opened socket=~p~n", [Socket]),
     Ref = make_ref(),
     ok = gen_udp:send(Socket, "localhost", 4000,
-                      term_to_binary({Ref, {Module, Function, Args}})),
+                      encrypt(term_to_binary({Ref, {Module, Function, Args}}))),
     Response = wait_for_ref(Socket, Ref),
     gen_udp:close(Socket),
     Response.
@@ -76,17 +105,17 @@ udp_client(Module, Function, Args) ->
 
 wait_for_ref(Socket, Ref) ->
 receive
-   {udp, Socket, _Host, _Port, Bin} = Msg ->
-       io:format("client received:~p~n", [Msg]),
-       case binary_to_term(Bin) of
-           {Ref, Response} ->
-               io:format("Yep, that's the one.~n", []),
-               Response;
-           {_AnotherRef, _Response} ->
-               io:format("Nope, it's them script-kiddies"
-                         " pranking again.~n", []),
-               wait_for_ref(Socket, Ref)
-       end
+       {udp, Socket, _Host, _Port, EncBin} = Msg ->
+           io:format("client received:~p~n", [Msg]),
+           case binary_to_term(decrypt(EncBin)) of
+               {Ref, Response} ->
+                   io:format("Yep, that's the one.~n", []),
+                   Response;
+               {_AnotherRef, _Response} ->
+                   io:format("Nope, it's them script-kiddies"
+                             " pranking again.~n", []),
+                   wait_for_ref(Socket, Ref)
+           end
 after 2000 ->
          timeout
 end.
