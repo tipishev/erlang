@@ -22,18 +22,15 @@
 ### Miscellaneous
 - [ ] [Beam Wisdoms](http://beam-wisdoms.clau.se/en/latest/)
 
-### Videos
-- [ ] [Learning Erlang - Easier than you think](https://www.youtube.com/watch?v=OCkL9z8IxOI)
-
 ## Tooling
 
 - [x] Use Dialyzer plugin for Vim.
-- [ ] Find a plugin powerful enough to suggest options for `gen_tcp:listen`.
+- [x] Find a plugin powerful enough to suggest options for `gen_tcp:listen`.
 - [ ] Set up a configurable code formatter `rebar3 format`?
 
 * [Glass](https://github.com/klarna-incubator/glass)
 
-https://www.youtube.com/watch?v=8FibGzqygo0&feature=emb_logo
+https://www.youtube.com/watch?v=8FibGzqygo0
 
 ## Debugging
 
