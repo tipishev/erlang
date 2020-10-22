@@ -1,5 +1,5 @@
 -module(exercises).
--export([ex1/0, ex2/0]).
+-export([ex1/0, ex2/0, ex3/0]).
 
 % ex2
 -export([start_nano_server/0, nano_client_eval/3]).
@@ -13,9 +13,68 @@ ex2() ->
     spawn(fun() -> start_nano_server() end),
     nano_client_eval(string, reverse, ["!ylranG"]).
 
-
+ex3() ->
+    spawn(fun() -> start_udp_server() end),
+    udp_client(lists, reverse, ["Foobar is the best!"]).
 
 %%% Underhood
+
+%%% ex3
+% TODO use apply instead of echo
+
+%% The server
+-spec start_udp_server() -> UdpServerPid :: pid().
+start_udp_server() ->
+    spawn(fun() -> udp_server(4000) end).
+
+-spec udp_server(Port) -> none() when
+      Port :: inet:port_number().
+
+udp_server(Port) ->
+    {ok, Socket} = gen_udp:open(Port, [binary]),
+    io:format("UDP server opened socket:~p~n", [Socket]),
+    udp_loop(Socket).
+
+-type socket() :: port().
+-spec udp_loop(Socket) -> none() when
+      Socket :: socket().
+
+udp_loop(Socket) ->
+    receive
+        {udp, Socket, Host, Port, Bin} = Msg ->
+            io:format("server received: ~p~n", [Msg]),
+            {Module, Function, Arguments} = binary_to_term(Bin),
+            Output = apply(Module, Function, Arguments),
+            gen_udp:send(Socket, Host, Port, term_to_binary(Output)),
+            udp_loop(Socket)
+    end.
+
+%% The client
+
+-spec udp_client(Module, Function, Args) -> Term | timeout
+                            when
+      Module :: module(),
+      Function :: function(),
+      Args :: [term()],
+      Term :: term().
+
+udp_client(Module, Function, Args) ->
+    {ok, Socket} = gen_udp:open(0, [binary]),
+    io:format("client opened socket=~p~n", [Socket]),
+    ok = gen_udp:send(Socket, "localhost", 4000,
+                      term_to_binary({Module, Function, Args})),
+    Response = receive
+                   {udp, Socket, _Host, _Port, Bin} = Msg ->
+                       io:format("client received:~p~n", [Msg]),
+                       binary_to_term(Bin)
+               after 2000 ->
+                         timeout
+               end,
+    gen_udp:close(Socket),
+    Response.
+
+
+
 
 %%% ex2
 start_nano_server() ->
