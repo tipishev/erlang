@@ -20,7 +20,6 @@ ex3() ->
 %%% Underhood
 
 %%% ex3
-% TODO use apply instead of echo
 
 %% The server
 -spec start_udp_server() -> UdpServerPid :: pid().
@@ -43,8 +42,9 @@ udp_loop(Socket) ->
     receive
         {udp, Socket, Host, Port, Bin} = Msg ->
             io:format("server received: ~p~n", [Msg]),
-            {Module, Function, Arguments} = binary_to_term(Bin),
-            Output = apply(Module, Function, Arguments),
+            {Ref, {Module, Function, Arguments}} = binary_to_term(Bin),
+            FunctionResult =apply(Module, Function, Arguments),
+            Output = {Ref, FunctionResult},
             gen_udp:send(Socket, Host, Port, term_to_binary(Output)),
             udp_loop(Socket)
     end.
@@ -61,19 +61,35 @@ udp_loop(Socket) ->
 udp_client(Module, Function, Args) ->
     {ok, Socket} = gen_udp:open(0, [binary]),
     io:format("client opened socket=~p~n", [Socket]),
+    Ref = make_ref(),
     ok = gen_udp:send(Socket, "localhost", 4000,
-                      term_to_binary({Module, Function, Args})),
-    Response = receive
-                   {udp, Socket, _Host, _Port, Bin} = Msg ->
-                       io:format("client received:~p~n", [Msg]),
-                       binary_to_term(Bin)
-               after 2000 ->
-                         timeout
-               end,
+                      term_to_binary({Ref, {Module, Function, Args}})),
+    Response = wait_for_ref(Socket, Ref),
     gen_udp:close(Socket),
     Response.
 
+-spec wait_for_ref(Socket, Ref) -> Term | timeout
+                                     when
+      Socket :: socket(),
+      Ref :: reference(),
+      Term :: term().
 
+wait_for_ref(Socket, Ref) ->
+receive
+   {udp, Socket, _Host, _Port, Bin} = Msg ->
+       io:format("client received:~p~n", [Msg]),
+       case binary_to_term(Bin) of
+           {Ref, Response} ->
+               io:format("Yep, that's the one.~n", []),
+               Response;
+           {_AnotherRef, _Response} ->
+               io:format("Nope, it's them script-kiddies"
+                         " pranking again.~n", []),
+               wait_for_ref(Socket, Ref)
+       end
+after 2000 ->
+         timeout
+end.
 
 
 %%% ex2
