@@ -1,11 +1,18 @@
 -module(email).
+
+%%% Exercise 17.5: a simple file-based email service
+
+%% user interface
 -export([
          start/0,
          % stop/0
+         
          list/1
          % get/2
          % send/3
         ]).
+
+%% records declarations
 -type username() :: string().
 -record(message, {id :: non_neg_integer(),
                   from :: username(),
@@ -14,7 +21,6 @@
 % -record(request, {operation, args}).
 
 
-%%% Exercise 17.5
 
 %% Start email server on port 8008
 
@@ -70,12 +76,13 @@ email_loop(Socket) ->
       Request :: request(),
       Response :: response().
 
+%% requests handler, for now only list
 handle({list, Username}) ->
     {ok, list_messages(Username)}.
 
 -spec list_messages(Username) -> Emails when
       Username :: string(),
-      Emails :: [term()].
+      Emails :: [#message{}].
 
 list_messages(Username) ->
     % TODO read from file
@@ -98,12 +105,13 @@ list(Username) ->
     ok = gen_tcp:send(Socket, term_to_binary({list, Username})),
     receive
         {tcp, Socket, Bin} ->
+            ok = gen_tcp:close(Socket),
             RawMessages = binary_to_term(Bin),
             MessagesTable = tabulate(RawMessages),
-            io:format(MessagesTable),
-            ok = gen_tcp:close(Socket)
+            io:format(MessagesTable)
     end.
 
+%% convert messages to a nicely-printable io_list
 -spec tabulate(Messages) -> FormattedMessages
                               when
       Messages :: [#message{}],
