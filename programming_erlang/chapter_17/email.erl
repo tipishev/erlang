@@ -83,8 +83,11 @@ email_loop(Socket) ->
 handle(_Request = {list, Username}) ->
     {ok, list_messages(Username)};  % always succeeds
 
-handle({get, Username, MessageId}) ->  % FIXME {error, not_found} case
-    {ok, get_message(Username, MessageId)}.
+handle({get, Username, MessageId}) ->
+    case get_message(Username, MessageId) of 
+        not_found -> {error, not_found};
+        Message -> {ok, Message}
+    end.
 
 -spec list_messages(Username) -> Messages when
       Username :: string(),
@@ -101,13 +104,24 @@ list_messages(Username) ->
     % lists:filter(fun(#message{to=To}) -> To =:= Username end, Messages).
     [Message || Message=#message{to=To} <- Messages, To =:= Username].
 
--spec get_message(Username, MessageId) -> Message when
+-spec get_message(Username, MessageId) -> Message | not_found when
       Username :: string(),
       MessageId :: message_id(),
       Message :: #message{}.
 
-get_message(_Username, _MessageId) ->
-    #message{id=42, from="bob", to="alice", content="Dummy!"}.
+get_message(Username, MessageId) ->
+    UserMessages = list_messages(Username),
+    get_message(UserMessages).
+
+-spec get_message_by_id(MessageId, Messages) -> Message | not_found
+                                     when
+      MessageId :: message_id(),
+      Messages :: [#message{}].
+      Message :: #message{}.
+
+get_message([]) -> not_found;
+get_message([H|T]) when #H{id=Id}
+
 
 %%% Client
 -spec list(Username) -> Messages
