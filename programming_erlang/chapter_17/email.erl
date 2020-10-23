@@ -2,19 +2,24 @@
 
 %%% Exercise 17.5: a simple file-based email service
 
-%% user interface
+%% user interface exports
 -export([
          start/0,
          % stop/0
          
-         list/1
-         % get/2
+         list/1,
+         get/2
          % send/3
         ]).
 
-%% records declarations
+%% types declarations
 -type username() :: string().
--record(message, {id :: non_neg_integer(),
+-type message_id() :: non_neg_integer().
+-type request() :: {list, Username :: username()} | {get, Username :: username(), MessageId :: message_id()}.
+-type response() :: {ok, Result :: term()} |{error, Reason :: atom()}.
+
+%% records declarations
+-record(message, {id :: message_id(),
                   from :: username(),
                   to :: username(),
                   content :: term()}).
@@ -62,7 +67,7 @@ email_loop(Socket) ->
     receive
         {tcp, Socket, Bin} ->
             Request = binary_to_term(Bin),
-            {ok, Response} = handle(Request),
+            Response = handle(Request),
             EncodedResponse = term_to_binary(Response),
             gen_tcp:send(Socket, EncodedResponse),
             email_loop(Socket);
@@ -70,20 +75,22 @@ email_loop(Socket) ->
             ok
     end.
 
--type request() :: {list, Username :: string()}.
--type response() :: {ok, Result :: term()}.
 -spec handle(Request) -> Response when
       Request :: request(),
       Response :: response().
 
-%% requests handler, for now only list
-handle({list, Username}) ->
-    {ok, list_messages(Username)}.
+%% requests handler, pattern match different requests
+handle(_Request = {list, Username}) ->
+    {ok, list_messages(Username)};  % always succeeds
 
--spec list_messages(Username) -> Emails when
+handle({get, Username, MessageId}) ->  % FIXME {error, not_found} case
+    {ok, get_message(Username, MessageId)}.
+
+-spec list_messages(Username) -> Messages when
       Username :: string(),
-      Emails :: [#message{}].
+      Messages :: [#message{}].
 
+%% always succeeds for any user
 list_messages(Username) ->
     % TODO read from file
     Messages = [
@@ -94,11 +101,19 @@ list_messages(Username) ->
     % lists:filter(fun(#message{to=To}) -> To =:= Username end, Messages).
     [Message || Message=#message{to=To} <- Messages, To =:= Username].
 
+-spec get_message(Username, MessageId) -> Message when
+      Username :: string(),
+      MessageId :: message_id(),
+      Message :: #message{}.
+
+get_message(_Username, _MessageId) ->
+    #message{id=42, from="bob", to="alice", content="Dummy!"}.
+
 %%% Client
--spec list(Username) -> Emails
+-spec list(Username) -> Messages
                           when
       Username :: string(),
-      Emails :: [term()].
+      Messages :: [#message{}].
 
 list(Username) ->
     {ok, Socket} = gen_tcp:connect("localhost", 8008, [binary, {packet, 4}]),
@@ -106,10 +121,36 @@ list(Username) ->
     receive
         {tcp, Socket, Bin} ->
             ok = gen_tcp:close(Socket),
-            RawMessages = binary_to_term(Bin),
+            {ok, RawMessages} = binary_to_term(Bin),
             MessagesTable = tabulate(RawMessages),
-            io:format(MessagesTable)
+            io:format(MessagesTable)  % TODO deduplicate
     end.
+
+-spec get(Username, MessageId) -> Message | {error, Reason}
+                                    when
+      Username :: username(),
+      MessageId :: message_id(),
+      Message :: #message{},
+      Reason :: not_found.
+
+get(Username, MessageId) ->
+    {ok, Socket} = gen_tcp:connect("localhost", 8008, [binary, {packet, 4}]),
+    ok = gen_tcp:send(Socket, term_to_binary({get, Username, MessageId})),
+    receive
+        {tcp, Socket, Bin} ->
+            ok = gen_tcp:close(Socket),
+            Result = binary_to_term(Bin),
+            case Result of 
+                {ok, RawMessage} ->
+                    MessagesTable = tabulate([RawMessage]),
+                    io:format(MessagesTable);  % TODO deduplicate
+                {error, not_found} ->
+                    io:format("No message with id ~p for ~p~n",
+                              [MessageId, Username])
+            end
+    end.
+
+
 
 %% convert messages to a nicely-printable io_list
 -spec tabulate(Messages) -> FormattedMessages
