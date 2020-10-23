@@ -6,8 +6,11 @@
     % get/2
     % send/3
 ]).
-
--record(message, {id, from, to, content}).
+-type username() :: string().
+-record(message, {id :: non_neg_integer(),
+                  from :: username(),
+                  to :: username(),
+                  content :: term()}).
 % -record(request, {operation, args}).
 
 
@@ -20,10 +23,9 @@
 start() ->
     start_tcp_listener(_PortNumber=8008).
 
--spec start_tcp_listener(PortNumber) -> ParallelServerPid
+-spec start_tcp_listener(PortNumber) -> ok
                                           when
-      PortNumber :: inet:port_number(),
-      ParallelServerPid :: pid().
+      PortNumber :: inet:port_number().
 
 %%% Server
 
@@ -31,7 +33,8 @@ start_tcp_listener(Port) ->
     {ok, Listen} = gen_tcp:listen(Port, [binary, {packet, 4},
                                          {reuseaddr, true},
                                          {active, true}]),
-    spawn(fun() -> run_parallel_server(Listen) end).
+    spawn(fun() -> run_parallel_server(Listen) end),
+    ok.
 
 
 -spec run_parallel_server(Listen) -> no_return()
@@ -74,11 +77,14 @@ handle({list, Username}) ->
       Emails :: [term()].
 
 list_messages(Username) ->
+    % TODO read from file
     Messages = [
         #message{id=1, from="bob", to="alice", content="Hi!"},
-        #message{id=2, from="alice", to="bob", content="Hullo!"}
+        #message{id=2, from="alice", to="bob", content="Hullo!"},
+        #message{id=3, from="alice", to="bob", content="Did you get my previous message?"}
     ],
-    lists:filter(fun(#message{to=To}) -> To =:= Username end, Messages).
+    % lists:filter(fun(#message{to=To}) -> To =:= Username end, Messages).
+    [Message || Message=#message{to=To} <- Messages, To =:= Username].
 
 %%% Client
 -spec list(Username) -> Emails
@@ -95,3 +101,8 @@ list(Username) ->
             io:format("Received: ~p~n", [Val]),
             gen_tcp:close(Socket)
     end.
+
+% -spec format_messages(Messages) -> FormattedList
+%                                      when
+%       Messages :: [message()],
+%       FormattedList :: string().
