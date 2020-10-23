@@ -1,11 +1,15 @@
 -module(email).
 -export([
-    start/0
-    % ,stop/0
-    ,list/1
-    % ,get/2
-    % ,send/3
+    start/0,
+    % stop/0
+    list/1
+    % get/2
+    % send/3
 ]).
+
+-record(message, {id, from, to, content}).
+% -record(request, {operation, args}).
+
 
 %%% Exercise 17.5
 
@@ -40,21 +44,41 @@ run_parallel_server(Listen) ->
     email_loop(Socket).
 
 
--spec email_loop(Socket) -> no_return()
+-spec email_loop(Socket) -> ok
                                           when
       Socket :: gen_tcp:socket().
 
 email_loop(Socket) ->
     receive
         {tcp, Socket, Bin} ->
-            io:format("Loop socket received~p~n", [Bin]),
-            Val = binary_to_term(Bin),
-            Response = term_to_binary(Val),
-            gen_tcp:send(Socket, Response),
+            Request = binary_to_term(Bin),
+            {ok, Response} = handle(Request),
+            EncodedResponse = term_to_binary(Response),
+            gen_tcp:send(Socket, EncodedResponse),
             email_loop(Socket);
         {tcp_closed, Socket} ->
-            io:format("Loop socket closed~n")
+            ok
     end.
+
+-type request() :: {list, Username :: string()}.
+-type response() :: {ok, Result :: term()}.
+-spec handle(Request) -> Response when
+      Request :: request(),
+      Response :: response().
+
+handle({list, Username}) ->
+    {ok, list_messages(Username)}.
+
+-spec list_messages(Username) -> Emails when
+      Username :: string(),
+      Emails :: [term()].
+
+list_messages(Username) ->
+    Messages = [
+        #message{id=1, from="bob", to="alice", content="Hi!"},
+        #message{id=2, from="alice", to="bob", content="Hullo!"}
+    ],
+    lists:filter(fun(#message{to=To}) -> To =:= Username end, Messages).
 
 %%% Client
 -spec list(Username) -> Emails
@@ -71,6 +95,3 @@ list(Username) ->
             io:format("Received: ~p~n", [Val]),
             gen_tcp:close(Socket)
     end.
-
-
-
