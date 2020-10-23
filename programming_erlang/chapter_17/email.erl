@@ -1,11 +1,11 @@
 -module(email).
 -export([
-    start/0,
-    % stop/0
-    list/1
-    % get/2
-    % send/3
-]).
+         start/0,
+         % stop/0
+         list/1
+         % get/2
+         % send/3
+        ]).
 -type username() :: string().
 -record(message, {id :: non_neg_integer(),
                   from :: username(),
@@ -29,6 +29,7 @@ start() ->
 
 %%% Server
 
+%% TODO spawn it for an easy kill
 start_tcp_listener(Port) ->
     {ok, Listen} = gen_tcp:listen(Port, [binary, {packet, 4},
                                          {reuseaddr, true},
@@ -48,7 +49,7 @@ run_parallel_server(Listen) ->
 
 
 -spec email_loop(Socket) -> ok
-                                          when
+                              when
       Socket :: gen_tcp:socket().
 
 email_loop(Socket) ->
@@ -79,10 +80,10 @@ handle({list, Username}) ->
 list_messages(Username) ->
     % TODO read from file
     Messages = [
-        #message{id=1, from="bob", to="alice", content="Hi!"},
-        #message{id=2, from="alice", to="bob", content="Hullo!"},
-        #message{id=3, from="alice", to="bob", content="Did you get my previous message?"}
-    ],
+                #message{id=1, from="bob", to="alice", content="Hi!"},
+                #message{id=2, from="alice", to="bob", content="Hullo!"},
+                #message{id=3, from="alice", to="bob", content="Did you get my previous message?"}
+               ],
     % lists:filter(fun(#message{to=To}) -> To =:= Username end, Messages).
     [Message || Message=#message{to=To} <- Messages, To =:= Username].
 
@@ -97,12 +98,31 @@ list(Username) ->
     ok = gen_tcp:send(Socket, term_to_binary({list, Username})),
     receive
         {tcp, Socket, Bin} ->
-            Val = binary_to_term(Bin),
-            io:format("Received: ~p~n", [Val]),
-            gen_tcp:close(Socket)
+            RawMessages = binary_to_term(Bin),
+            MessagesTable = tabulate(RawMessages),
+            io:format(MessagesTable),
+            ok = gen_tcp:close(Socket)
     end.
 
-% -spec format_messages(Messages) -> FormattedList
-%                                      when
-%       Messages :: [message()],
-%       FormattedList :: string().
+-spec tabulate(Messages) -> FormattedMessages
+                              when
+      Messages :: [#message{}],
+      FormattedMessages :: iolist().
+
+tabulate(Messages) ->
+    tabulate(Messages, []).
+
+tabulate(Messages, []) -> tabulate(Messages, ["Id\tFrom\tContent\n"]);
+tabulate([#message{id=Id, from=From, content=Content}|Tail], Acc) ->
+    Row = io_lib:format("~p\t~p\t~p~n", [Id, From, Content]),
+    tabulate(Tail, [Row|Acc]);
+tabulate([], Acc) -> lists:reverse(Acc).
+
+
+% -spec unconsult(File, Terms)
+
+% unconsult(Filename, Terms) ->
+%     {ok, File} = file:open(Filename, write),
+%     lists:foreach(
+%       fun(Term) -> io:format(File, "~p.~n", [Term]) end, Terms),
+%     file:close(File).
