@@ -1,5 +1,5 @@
 -module(exercises).
--export([ex1/0, ex2/0, ex3/0]).
+-export([ex1/0, ex2/0, ex3/0, ex4/0]).
 
 % ex2
 -export([start_nano_server/0, nano_client_eval/3]).
@@ -16,6 +16,17 @@ ex2() ->
 ex3() ->
     spawn(fun() -> start_udp_server() end),
     udp_client(lists, reverse, ["Foobar is the best!"]).
+
+ex4() -> ex3().
+
+% ex5() ->
+%     email_TCP_server(8008).
+    % check_mail(alice).
+    % check_mail(bob),
+    % send_mail(alice, bob, "Hello!"),
+    % check_mail(bob),
+    % send_mail(bob, alice, "What's up?"),
+    % check_mail(alice),
 
 %%% Underhood
 
