@@ -115,17 +115,7 @@ list_messages(Username) ->
 
 get_message(Username, MessageId) ->
     UserMessages = list_messages(Username),
-    get_message_by_id(UserMessages, MessageId).
-
--spec get_message_by_id(Messages, MessageId) -> Message | not_found
-                                     when
-      Messages :: [message()],
-      MessageId :: message_id(),
-      Message :: message().
-
-get_message_by_id([], _MessageId) -> not_found;
-get_message_by_id([#message{id=MessageId}=Message|_T], MessageId) -> Message;
-get_message_by_id([_H|T], MessageId) -> get_message_by_id(T, MessageId).
+    lists:keyfind(MessageId, 2, UserMessages).
 
 -spec send_message(From, To, Message) -> MessageId when
       From :: username(),
