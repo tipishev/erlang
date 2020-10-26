@@ -26,7 +26,9 @@
 %% types declarations
 -type username() :: string().
 -type message_id() :: non_neg_integer().
--type request() :: {list, Username :: username()} | {get, Username :: username(), MessageId :: message_id()}.
+-type request() :: {list, Username :: username()}
+                   | {get, Username :: username(), MessageId :: message_id()}
+                   | {send, From :: username(), To :: username(), Message :: message()}.
 -type response() :: {ok, Result :: term()} |{error, Reason :: atom()}.
 -type message() :: #message{}.
 
