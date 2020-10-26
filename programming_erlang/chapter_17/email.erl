@@ -8,15 +8,12 @@
          % stop/0
          
          list/1,
-         get/2
-         % send/3
+         get/2,
+         send/3
         ]).
 
-%% types declarations
--type username() :: string().
--type message_id() :: non_neg_integer().
--type request() :: {list, Username :: username()} | {get, Username :: username(), MessageId :: message_id()}.
--type response() :: {ok, Result :: term()} |{error, Reason :: atom()}.
+%% helpers
+-export([create_mbox/0]).
 
 %% records declarations
 -record(message, {id :: message_id(),
@@ -26,6 +23,12 @@
 % -record(request, {operation, args}).
 
 
+%% types declarations
+-type username() :: string().
+-type message_id() :: non_neg_integer().
+-type request() :: {list, Username :: username()} | {get, Username :: username(), MessageId :: message_id()}.
+-type response() :: {ok, Result :: term()} |{error, Reason :: atom()}.
+-type message() :: #message{}.
 
 %% Start email server on port 8008
 
@@ -83,31 +86,32 @@ email_loop(Socket) ->
 handle(_Request = {list, Username}) ->
     {ok, list_messages(Username)};  % always succeeds
 
-handle({get, Username, MessageId}) ->
+handle(_Request = {get, Username, MessageId}) ->
     case get_message(Username, MessageId) of 
         not_found -> {error, not_found};
         Message -> {ok, Message}
-    end.
+    end;
+
+handle(_Request = {send, To, From, Message}) ->
+    MessageId = send_message(From, To, Message),
+    {ok, MessageId}.
+
 
 -spec list_messages(Username) -> Messages when
       Username :: string(),
-      Messages :: [#message{}].
+      Messages :: [message()].
+
 
 %% always succeeds for any user
 list_messages(Username) ->
-    % TODO read from file
-    Messages = [
-                #message{id=1, from="bob", to="alice", content="Hi!"},
-                #message{id=2, from="alice", to="bob", content="Hullo!"},
-                #message{id=3, from="alice", to="bob", content="Did you get my previous message?"}
-               ],
+    {ok, Messages} = file:consult("mbox"),
     % lists:filter(fun(#message{to=To}) -> To =:= Username end, Messages).
     [Message || Message=#message{to=To} <- Messages, To =:= Username].
 
 -spec get_message(Username, MessageId) -> Message | not_found when
       Username :: string(),
       MessageId :: message_id(),
-      Message :: #message{}.
+      Message :: message().
 
 get_message(Username, MessageId) ->
     UserMessages = list_messages(Username),
@@ -115,20 +119,36 @@ get_message(Username, MessageId) ->
 
 -spec get_message_by_id(Messages, MessageId) -> Message | not_found
                                      when
-      Messages :: [#message{}],
+      Messages :: [message()],
       MessageId :: message_id(),
-      Message :: #message{}.
+      Message :: message().
 
 get_message_by_id([], _MessageId) -> not_found;
 get_message_by_id([#message{id=MessageId}=Message|_T], MessageId) -> Message;
 get_message_by_id([_H|T], MessageId) -> get_message_by_id(T, MessageId).
+
+-spec send_message(From, To, Message) -> MessageId when
+      From :: username(),
+      To :: username(),
+      Message :: message(),
+      MessageId :: message_id().
+
+send_message(From, To, Message) ->
+    {ok, ExistingMessages} = file:consult("mbox"),
+    MessageId = length(ExistingMessages) + 1,
+    ok = unconsult("mbox", lists:reverse([#message{id = MessageId,
+                                                   to = To,
+                                                   from = From,
+                                                   content = Message}
+                                          |ExistingMessages])),
+    MessageId.
 
 
 %%% Client
 -spec list(Username) -> Messages
                           when
       Username :: string(),
-      Messages :: [#message{}].
+      Messages :: [message()].
 
 list(Username) ->
     {ok, Socket} = gen_tcp:connect("localhost", 8008, [binary, {packet, 4}]),
@@ -165,9 +185,39 @@ get(Username, MessageId) ->
             end
     end.
 
+-spec send(To, From, Message) -> {ok, MessageId}
+                                   when
+      To :: username(),
+      From :: username(),
+      Message :: message(),
+      MessageId :: message_id().
 
+% FIXME deduplicate RPC
+send(To, From, Message) ->
+    {ok, Socket} = gen_tcp:connect("localhost", 8008, [binary, {packet, 4}]),
+    ok = gen_tcp:send(Socket, term_to_binary({send, To, From, Message})),
+    receive
+        {tcp, Socket, Bin} ->
+            ok = gen_tcp:close(Socket),
+            {ok, MessageId} = binary_to_term(Bin),
+            {ok, MessageId}
+    end.
+
+
+%%% Helpers
+
+-spec create_mbox() -> ok.
+create_mbox() ->
+    Messages = [
+                #message{id=1, from="bob", to="alice", content="Hi!"},
+                #message{id=2, from="alice", to="bob", content="Hullo!"},
+                #message{id=3, from="alice", to="bob",
+                         content="Did you get my previous message?"}
+               ],
+    unconsult("mbox", Messages).
 
 %% convert messages to a nicely-printable io_list
+
 -spec tabulate(Messages) -> FormattedMessages
                               when
       Messages :: [#message{}],
@@ -187,6 +237,8 @@ tabulate([#message{id=Id, from=From, content=Content}|Tail], Acc) ->
     Row = io_lib:format("~p\t~p\t~p~n", [Id, From, Content]),
     tabulate(Tail, [Row|Acc]);
 tabulate([], Acc) -> lists:reverse(Acc).
+
+%% file operations
 
 -spec unconsult(Filename, Terms) -> ok 
                                       when
