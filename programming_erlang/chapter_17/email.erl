@@ -20,17 +20,17 @@
                   from :: username(),
                   to :: username(),
                   content :: term()}).
-% -record(request, {operation, args}).
-
 
 %% types declarations
 -type username() :: string().
 -type message_id() :: non_neg_integer().
 -type request() :: {list, Username :: username()}
-                   | {get, Username :: username(), MessageId :: message_id()}
-                   | {send, From :: username(), To :: username(), Message :: message()}.
--type response() :: {ok, Result :: term()} |{error, Reason :: atom()}.
+                 | {get, Username :: username(), MessageId :: message_id()}
+                 | {send, From :: username(), To :: username(), Message :: message()}.
+-type response() :: {ok, Result :: term()} | {error, Reason :: atom()}.
 -type message() :: #message{}.
+
+%%% Server
 
 %% Start email server on port 8008
 
@@ -39,13 +39,11 @@
 start() ->
     start_tcp_listener(_PortNumber=8008).
 
+%% TODO spawn it for an easy kill
 -spec start_tcp_listener(PortNumber) -> ok
                                           when
       PortNumber :: inet:port_number().
 
-%%% Server
-
-%% TODO spawn it for an easy kill
 start_tcp_listener(Port) ->
     {ok, Listen} = gen_tcp:listen(Port, [binary, {packet, 4},
                                          {reuseaddr, true},
