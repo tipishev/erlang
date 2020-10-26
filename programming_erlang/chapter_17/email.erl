@@ -151,15 +151,9 @@ send_message(From, To, Message) ->
       Messages :: [message()].
 
 list(Username) ->
-    {ok, Socket} = gen_tcp:connect("localhost", 8008, [binary, {packet, 4}]),
-    ok = gen_tcp:send(Socket, term_to_binary({list, Username})),
-    receive
-        {tcp, Socket, Bin} ->
-            ok = gen_tcp:close(Socket),
-            {ok, RawMessages} = binary_to_term(Bin),
-            MessagesTable = tabulate(RawMessages),
-            io:format(MessagesTable)  % TODO deduplicate
-    end.
+    RawMessages = rpc({list, Username}),
+    MessagesTable = tabulate(RawMessages),
+    io:format(MessagesTable).  % TODO deduplicate
 
 -spec get(Username, MessageId) -> ok | {error, Reason}
                                     when
@@ -169,21 +163,9 @@ list(Username) ->
       Reason :: not_found.
 
 get(Username, MessageId) ->
-    {ok, Socket} = gen_tcp:connect("localhost", 8008, [binary, {packet, 4}]),
-    ok = gen_tcp:send(Socket, term_to_binary({get, Username, MessageId})),
-    receive
-        {tcp, Socket, Bin} ->
-            ok = gen_tcp:close(Socket),
-            Result = binary_to_term(Bin),
-            case Result of 
-                {ok, RawMessage} ->
-                    MessagesTable = tabulate([RawMessage]),
-                    io:format(MessagesTable);  % TODO deduplicate
-                {error, not_found} ->
-                    io:format("No message with id ~p for ~p~n",
-                              [MessageId, Username])
-            end
-    end.
+    RawMessage = rpc({get, Username, MessageId}),
+    MessagesTable = tabulate([RawMessage]),
+    io:format(MessagesTable).  % TODO deduplicate
 
 -spec send(To, From, Message) -> {ok, MessageId}
                                    when
@@ -192,19 +174,27 @@ get(Username, MessageId) ->
       Message :: message(),
       MessageId :: message_id().
 
-% FIXME deduplicate RPC
 send(To, From, Message) ->
-    {ok, Socket} = gen_tcp:connect("localhost", 8008, [binary, {packet, 4}]),
-    ok = gen_tcp:send(Socket, term_to_binary({send, To, From, Message})),
-    receive
-        {tcp, Socket, Bin} ->
-            ok = gen_tcp:close(Socket),
-            {ok, MessageId} = binary_to_term(Bin),
-            {ok, MessageId}
-    end.
+    MessageId = rpc({send, To, From, Message}),
+    {ok, MessageId}.
 
 
 %%% Helpers
+
+-spec rpc(Operation) -> Response when
+      Operation :: tuple(),
+      Response :: term().
+
+% TODO encryption, custom encode/decode functions
+rpc(Operation) ->
+    {ok, Socket} = gen_tcp:connect("localhost", 8008, [binary, {packet, 4}]),
+    ok = gen_tcp:send(Socket, term_to_binary(Operation)),
+    receive
+        {tcp, Socket, Bin} ->
+            ok, gen_tcp:close(Socket),
+            {ok, Payload} = binary_to_term(Bin),
+            Payload
+    end.
 
 -spec create_mbox() -> ok.
 create_mbox() ->
