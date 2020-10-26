@@ -141,11 +141,11 @@ list(Username) ->
             io:format(MessagesTable)  % TODO deduplicate
     end.
 
--spec get(Username, MessageId) -> Message | {error, Reason}
+-spec get(Username, MessageId) -> ok | {error, Reason}
                                     when
       Username :: username(),
       MessageId :: message_id(),
-      Message :: #message{},
+      % Format :: io:format(),
       Reason :: not_found.
 
 get(Username, MessageId) ->
@@ -176,17 +176,26 @@ get(Username, MessageId) ->
 tabulate(Messages) ->
     tabulate(Messages, []).
 
+-spec tabulate(Messages, Acc) -> FormattedMessages
+                              when
+      Messages :: [#message{}],
+      Acc :: iolist(),
+      FormattedMessages :: iolist().
+
 tabulate(Messages, []) -> tabulate(Messages, ["Id\tFrom\tContent\n"]);
 tabulate([#message{id=Id, from=From, content=Content}|Tail], Acc) ->
     Row = io_lib:format("~p\t~p\t~p~n", [Id, From, Content]),
     tabulate(Tail, [Row|Acc]);
 tabulate([], Acc) -> lists:reverse(Acc).
 
+-spec unconsult(Filename, Terms) -> ok 
+                                      when
+      Filename :: string(),
+      Terms :: [term()].
 
-% -spec unconsult(File, Terms)
 
-% unconsult(Filename, Terms) ->
-%     {ok, File} = file:open(Filename, write),
-%     lists:foreach(
-%       fun(Term) -> io:format(File, "~p.~n", [Term]) end, Terms),
-%     file:close(File).
+unconsult(Filename, Terms) ->
+    {ok, File} = file:open(Filename, write),
+    lists:foreach(
+      fun(Term) -> io:format(File, "~p.~n", [Term]) end, Terms),
+    file:close(File).
