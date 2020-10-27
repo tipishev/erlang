@@ -8,6 +8,7 @@
 - [ ] [Learn You Some Erlang for Great Good! A Beginner's Guide](https://learnyousomeerlang.com/content)
 - [ ] [The Erlang Runtime System](https://blog.stenmans.org/theBeamBook/)
 - [ ] [Erlang and OTP in Action](https://www.manning.com/books/erlang-and-otp-in-action)
+- [ ] [Adopting Erlang](https://adoptingerlang.org)
 - [ ] [Erlang Programming](https://www.oreilly.com/library/view/erlang-programming/9780596803940/) 2009, outdated?
 - [ ] [Erlang in Anger](http://www.erlang-in-anger.com/)
 - [ ] [Études for Erlang](https://www.oreilly.com/library/view/etudes-for-erlang/9781491917657/)
