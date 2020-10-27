@@ -66,3 +66,7 @@ Code from https://blog.stenmans.org/theBeamBook/
 
 * https://tech.nextroll.com/blog/dev/2020/02/25/erlang-rebar3-format.html
 * https://notamonadtutorial.com/erlang-tooling-in-2020-b9606596353a
+
+- [ ] `+sFlag Value` Scheduling specific flags
+
+Erl has quite a few BindTypes for scheduling. Maybe it's worth exploring and visualizing.
