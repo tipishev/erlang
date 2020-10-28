@@ -6,7 +6,7 @@
 
 - [ ] [Programming Erlang: Software for a Concurrent World](https://books.google.se/books/about/Programming_Erlang.html)
 - [ ] [Learn You Some Erlang for Great Good! A Beginner's Guide](https://learnyousomeerlang.com/content)
-- [ ] [The Erlang Runtime System](https://blog.stenmans.org/theBeamBook/)
+- [ ] [The Erlang Runtime System aka The Beam Book](https://blog.stenmans.org/theBeamBook/)
 - [ ] [Erlang and OTP in Action](https://www.manning.com/books/erlang-and-otp-in-action)
 - [ ] [Adopting Erlang](https://adoptingerlang.org)
 - [ ] [Erlang Programming](https://www.oreilly.com/library/view/erlang-programming/9780596803940/) 2009, outdated?
@@ -17,23 +17,24 @@
 - [X] [Programming Rules](http://www.erlang.se/doc/programming_rules.shtml)
 - [ ] [Erlang module](http://erlang.org/doc/man/erlang.html)
 - [X] [Erl](http://erlang.org/doc/man/erl.html)
+- [ ] [Mnesia](http://erlang.org/doc/man/mnesia.html)
+- [ ] [QLC](http://erlang.org/doc/man/qlc.html)
 - [ ] [External Term format](https://erlang.org/doc/apps/erts/erl_ext_dist.html)
-- [ ] [Rebar3](https://www.rebar3.org/docs/)
 
 ### Miscellaneous
 - [ ] [Beam Wisdoms](http://beam-wisdoms.clau.se/en/latest/)
 - [ ] [Checklist Manifesto](https://www.amazon.com/Checklist-Manifesto-How-Things-Right/dp/0312430000)
-https://www.youtube.com/watch?v=HQkxm2P2xbY
+- [ ] https://www.youtube.com/watch?v=HQkxm2P2xbY
 
 ## Tooling
-
 - [x] Use Dialyzer plugin for Vim.
 - [x] Find a plugin powerful enough to suggest options for `gen_tcp:listen`.
 - [ ] Set up a configurable code formatter `rebar3 format`?
+- [ ] [Rebar3](https://www.rebar3.org/docs/)
 
 * [Glass](https://github.com/klarna-incubator/glass)
 
-https://www.youtube.com/watch?v=8FibGzqygo0
+ - [ ] https://www.youtube.com/watch?v=8FibGzqygo0
 
 ## Debugging
 
@@ -41,17 +42,18 @@ https://www.youtube.com/watch?v=8FibGzqygo0
 * https://blog.stenmans.org/theBeamBook/#_redbug
 
 ## Deeper Theory
+
 * [OTP Blog](http://blog.erlang.org/)
 
 ## Directories
 
 ### programming_erlang
 
-Code and exercises from Programming Erlang 2nd edition
+Code and exercises from Programming Erlang 2nd edition.
 
 ### beam_book
 
-Code from https://blog.stenmans.org/theBeamBook/
+Code from The Beam Book.
 
 ## Beginner Talk Ideas
 
@@ -69,5 +71,4 @@ Code from https://blog.stenmans.org/theBeamBook/
 * https://notamonadtutorial.com/erlang-tooling-in-2020-b9606596353a
 
 - [ ] `+sFlag Value` Scheduling specific flags
-
 Erl has quite a few BindTypes for scheduling. Maybe it's worth exploring and visualizing.
