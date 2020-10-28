@@ -1,10 +1,10 @@
 -module(lib_filenames_dts).
 -export([
     open/1,
-    close/0
+    close/0,
     % test/0,
-    % filename2index/1,
-    % index2filename/1,
+    filename2index/1,
+    index2filename/1
 ]).
 
 open(Filename) ->
@@ -23,3 +23,23 @@ open(Filename) ->
     end.
 
 close() -> dets:close(?MODULE).
+
+filename2index(Filename) when is_binary(Filename) ->
+    case dets:lookup(?MODULE, Filename) of
+        [] ->
+            [{_, Free}] = dets:lookup(?MODULE, free),
+            ok = dets:insert(
+                   ?MODULE,
+                   [{Free, Filename},
+                    {Filename, Free},
+                    {free, Free + 1}]),
+            Free;
+        [{_, N}] ->
+            N
+    end.
+
+index2filename(Index) when is_integer(Index) ->
+    case dets:lookup(?MODULE, Index) of
+        [] -> error;
+        [{_Index, Filename}] -> Filename
+    end.
