@@ -24,6 +24,7 @@
 ### Miscellaneous
 - [ ] [Beam Wisdoms](http://beam-wisdoms.clau.se/en/latest/)
 - [ ] [Checklist Manifesto](https://www.amazon.com/Checklist-Manifesto-How-Things-Right/dp/0312430000)
+- [ ] https://medium.com/@jlouis666
 - [ ] https://www.youtube.com/watch?v=HQkxm2P2xbY
 
 ## Tooling
