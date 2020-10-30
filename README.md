@@ -19,6 +19,7 @@
 - [X] [Erl](http://erlang.org/doc/man/erl.html)
 - [ ] [Mnesia](http://erlang.org/doc/man/mnesia.html)
 - [ ] [QLC](http://erlang.org/doc/man/qlc.html)
+- [ ] [Debugger](http://www.erlang.org/doc/apps/debugger/debugger.pdf)
 - [ ] [External Term format](https://erlang.org/doc/apps/erts/erl_ext_dist.html)
 
 ### Miscellaneous
