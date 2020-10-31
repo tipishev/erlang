@@ -17,6 +17,7 @@
 - [X] [Programming Rules](http://www.erlang.se/doc/programming_rules.shtml)
 - [ ] [Erlang module](http://erlang.org/doc/man/erlang.html)
 - [X] [Erl](http://erlang.org/doc/man/erl.html)
+- [ ] [gen_server](http://erlang.org/doc/man/gen_server.html)
 - [ ] [Mnesia](http://erlang.org/doc/man/mnesia.html)
 - [ ] [QLC](http://erlang.org/doc/man/qlc.html)
 - [ ] [Debugger](http://www.erlang.org/doc/apps/debugger/debugger.pdf)
