@@ -14,6 +14,7 @@
 - [ ] [Études for Erlang](https://www.oreilly.com/library/view/etudes-for-erlang/9781491917657/)
 
 ### Official Docs
+
 - [X] [Programming Rules](http://www.erlang.se/doc/programming_rules.shtml)
 - [ ] [Erlang module](http://erlang.org/doc/man/erlang.html)
 - [X] [Erl](http://erlang.org/doc/man/erl.html)
@@ -25,19 +26,20 @@
 - [ ] [External Term format](https://erlang.org/doc/apps/erts/erl_ext_dist.html)
 
 ### Miscellaneous
+
 - [ ] [Beam Wisdoms](http://beam-wisdoms.clau.se/en/latest/)
 - [ ] [Checklist Manifesto](https://www.amazon.com/Checklist-Manifesto-How-Things-Right/dp/0312430000)
 - [ ] https://medium.com/@jlouis666
 
 ## Tooling
+
+- [ ] https://www.youtube.com/watch?v=8FibGzqygo0
 - [x] Use Dialyzer plugin for Vim.
 - [x] Find a plugin powerful enough to suggest options for `gen_tcp:listen`.
 - [ ] Set up a configurable code formatter `rebar3 format`?
 - [ ] [Rebar3](https://www.rebar3.org/docs/)
 
 * [Glass](https://github.com/klarna-incubator/glass)
-
- - [ ] https://www.youtube.com/watch?v=8FibGzqygo0
 
 ## Debugging
 
