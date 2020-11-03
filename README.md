@@ -18,6 +18,7 @@
 - [X] [Programming Rules](http://www.erlang.se/doc/programming_rules.shtml)
 - [ ] [Erlang module](http://erlang.org/doc/man/erlang.html)
 - [X] [Erl](http://erlang.org/doc/man/erl.html)
+- [ ] [lists](http://erlang.org/doc/man/lists.html)
 - [ ] [gen_server](http://erlang.org/doc/man/gen_server.html) + source
 - [ ] [design_principles.pdf](http://www.erlang.org/doc/pdf/design_principles.pdf)
 - [ ] [OTP Version Histories](https://www.erlang.org/downloads/)
