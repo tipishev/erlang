@@ -20,6 +20,7 @@
 - [X] [Erl](http://erlang.org/doc/man/erl.html)
 - [ ] [gen_server](http://erlang.org/doc/man/gen_server.html) + source
 - [ ] [design_principles.pdf](http://www.erlang.org/doc/pdf/design_principles.pdf)
+- [ ] [OTP Version Histories](https://www.erlang.org/downloads/)
 - [ ] [Mnesia](http://erlang.org/doc/man/mnesia.html)
 - [ ] [QLC](http://erlang.org/doc/man/qlc.html)
 - [ ] [Debugger](http://www.erlang.org/doc/apps/debugger/debugger.pdf)
