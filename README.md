@@ -16,6 +16,7 @@
 ### Official Docs
 
 - [X] [Programming Rules](http://www.erlang.se/doc/programming_rules.shtml)
+- [ ] [Efficiency Guide](http://erlang.org/doc/efficiency_guide/introduction.html)
 - [ ] [Erlang module](http://erlang.org/doc/man/erlang.html)
 - [X] [Erl](http://erlang.org/doc/man/erl.html)
 - [ ] [lists](http://erlang.org/doc/man/lists.html)
@@ -25,7 +26,6 @@
 - [ ] [Mnesia](http://erlang.org/doc/man/mnesia.html)
 - [ ] [QLC](http://erlang.org/doc/man/qlc.html)
 - [ ] [Debugger](http://www.erlang.org/doc/apps/debugger/debugger.pdf)
-- [ ] [Efficiency Guide](http://erlang.org/doc/efficiency_guide/introduction.html)
 - [ ] [External Term format](https://erlang.org/doc/apps/erts/erl_ext_dist.html)
 
 ### Miscellaneous
@@ -36,13 +36,12 @@
 
 ## Tooling
 
-- [ ] https://www.youtube.com/watch?v=8FibGzqygo0
 - [x] Use Dialyzer plugin for Vim.
 - [x] Find a plugin powerful enough to suggest options for `gen_tcp:listen`.
 - [ ] Set up a configurable code formatter `rebar3 format`?
 - [ ] [Rebar3](https://www.rebar3.org/docs/)
-
-* [Glass](https://github.com/klarna-incubator/glass)
+- [ ] [Erlang LS presentation by Roberto Aloi](https://www.youtube.com/watch?v=8FibGzqygo0)
+- [ ] [Glass](https://github.com/klarna-incubator/glass)
 
 ## Debugging
 
