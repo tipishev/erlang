@@ -20,7 +20,9 @@
 - [ ] [Erlang module](http://erlang.org/doc/man/erlang.html)
 - [X] [Erl](http://erlang.org/doc/man/erl.html)
 - [ ] [lists](http://erlang.org/doc/man/lists.html)
+- [ ] [code](http://erldocs.com/18.0/kernel/code.html)
 - [ ] [gen_server](http://erlang.org/doc/man/gen_server.html) + source
+- [ ] [OTP Design Principles](http://erlang.org/doc/design_principles/des_princ.html)
 - [ ] [design_principles.pdf](http://www.erlang.org/doc/pdf/design_principles.pdf)
 - [ ] [OTP Version Histories](https://www.erlang.org/downloads/)
 - [ ] [Mnesia](http://erlang.org/doc/man/mnesia.html)
