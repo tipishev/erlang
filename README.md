@@ -54,13 +54,9 @@
 
 ## Directories
 
-### programming_erlang
-
-Code and exercises from Programming Erlang 2nd edition.
-
-### beam_book
-
-Code from The Beam Book.
+* programming_erlang: Code and exercises from Programming Erlang 2nd edition.
+* beam_book: Code from The Beam Book.
+* lyse: Code from Learn You Some Erlang
 
 ## Beginner Talk Ideas
 
