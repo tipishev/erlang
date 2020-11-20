@@ -55,3 +55,32 @@ handle_call({unregister, Name}, _From, S = #state{pid=P, name=N}) ->
         none ->
             {reply, ok, S}
     end;
+handle_call({whereis, Name}, _From, S = #state{name=N}) ->
+    case gb_trees:lookup(Name, N) of
+        {value, {Pid,_}} ->
+            {reply, Pid, S};
+        none ->
+            {reply, undefined, S}
+    end;
+handle_call(get_names, _From, S = #state{name=N}) ->
+    {reply, gb_trees:keys(N), S};
+handle_call(stop, _From, State) ->
+    {stop, normal, ok, State};
+handle_call(_Event, _From, State) ->
+    {noreply, State}.
+
+handle_cast(_Event, State) ->
+    {noreply, State}.
+
+handle_info({'DOWN', Ref, process, Pid, _Reason}, S = #state{pid=P,name=N}) ->
+    {value, {Name, Ref}} = gb_trees:lookup(Pid, P),
+    {noreply, S#state{pid = gb_trees:delete(Pid, P),
+                 name = gb_trees:delete(Name, N)}};
+handle_info(_Event, State) ->
+    {noreply, State}.
+
+code_change(_OldVsn, State, _Extra) ->
+    {ok, State}.
+
+terminate(_Reason, _State) ->
+    ok.
