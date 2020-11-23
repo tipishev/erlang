@@ -1,4 +1,4 @@
--module(regis_serer_tests).
+-module(regis_server_tests).
 -include_lib("eunit/include/eunit.hrl").
 
 % like setUp()/tearDown() in Python
