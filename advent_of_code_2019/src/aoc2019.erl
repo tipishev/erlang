@@ -4,8 +4,9 @@
 -record(solution, {part1, part2}).
 
 solve(day1) ->
-    #solution{part1=day1:solve_part1(read_integers(day1)),
-              part2=undefined}.
+    Input = read_integers(day1),
+    #solution{part1=day1:solve_part1(Input),
+              part2=day1:solve_part2(Input)}.
 
 
 %% reads a list of integers from "inputs/Filename"
