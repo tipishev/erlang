@@ -7,7 +7,7 @@
 helpers_test_() ->
     [
      {"Segment to tuple",
-     ?_assertEqual(day3:segment_to_tuple("R123"), {right, 123})}
+     ?_assertEqual(day3:parse_segment("R123"), {right, 123})}
     ].
 
 

@@ -6,7 +6,7 @@
 -export([solve_part1/1, solve_part2/1]).
 
 %% for tests
--export([segment_to_tuple/1]).
+-export([parse_segment/1]).
 
 
 %%% solution behavior
@@ -19,10 +19,10 @@ solve_part2(_Input) -> undefined.
 
 %%% internals
 parse([WireA, WireB]) ->
-    {lists:map(fun segment_to_tuple/1, WireA),
-     lists:map(fun segment_to_tuple/1, WireB)}.
+    {lists:map(fun parse_segment/1, WireA),
+     lists:map(fun parse_segment/1, WireB)}.
 
-segment_to_tuple([DirectionLetter | LengthString]) ->
+parse_segment([DirectionLetter | LengthString]) ->
     DirectionAtom = case DirectionLetter of
         $R -> right;
         $U -> up;
@@ -31,5 +31,14 @@ segment_to_tuple([DirectionLetter | LengthString]) ->
     end,
     {DirectionAtom, list_to_integer(LengthString)}.
 
-distance_to_closest_intersection(_WireA, _WireB) ->
-    6.
+distance_to_closest_intersection(WireA, WireB) ->  % FIXME intersect them
+    {affected_spots(WireA), affected_spots(WireB)}.
+
+affected_spots(Wire) ->
+    lists:foldl(fun add_spots/2,
+                _Acc0={_LastSpot={0,0}, _AllSpots=sets:new()},
+                Wire).
+
+add_spots(Segment, _AccIn={LastSpot, AllSpots}) ->
+    pass.
+

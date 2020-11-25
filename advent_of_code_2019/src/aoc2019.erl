@@ -28,6 +28,7 @@ test(Day) when is_atom(Day) ->
                                                "_tests"]),
     TestModule = list_to_atom(TestModuleName),
     eunit:test(TestModule, [verbose]).
+    % eunit:test({generator, fun day3_tests:part1_test_/0}).
 
 %% reads newline-separated integers from "inputs/Filename"
 read_newline_separated_integers(Filename) ->
