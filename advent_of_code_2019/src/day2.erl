@@ -10,11 +10,23 @@
 
 %%% solution behavior
 
-solve_part1(_Input) ->
-    undefined.
+solve_part1([Zeroth, _, _ | Tail]) ->
+    calculate(Zeroth, Tail, _Verb=12, _Noun=2).
 
-solve_part2(_Input) ->
-    undefined.
+solve_part2([Zeroth, _, _ | Tail]) ->
+    SearchSpace = [{Verb, Noun} || Verb <- lists:seq(0, 99),
+                                   Noun <- lists:seq(0, 99)],
+    {Verb, Noun} = hd(lists:dropwhile(
+                        fun({Verb, Noun}) ->
+                                calculate(Zeroth, Tail,
+                                          Verb, Noun) =/= 19690720 end,
+                        SearchSpace)),
+    Verb * 100 + Noun.
+
+
+calculate(Zeroth, Tail, Verb, Noun) ->
+    hd(compute([Zeroth, Verb, Noun | Tail])).
+
 
 %%% internals
 
@@ -26,20 +38,22 @@ compute(Operations, Current) ->
     OpCode = array:get(Current, Operations),
     case OpCode of
         1 ->  % add
-            A_pos = array:get(Current + 1, Operations),
-            B_pos = array:get(Current + 2, Operations),
+            LeftIndex = array:get(Current + 1, Operations),
+            RightIndex = array:get(Current + 2, Operations),
             Out_pos = array:get(Current + 3, Operations),
-            A = array:get(A_pos, Operations),
-            B = array:get(B_pos, Operations),
-            NewOperations = array:set(Out_pos, A + B, Operations),
+            Left = array:get(LeftIndex, Operations),
+            Right = array:get(RightIndex, Operations),
+            Result = Left + Right,
+            NewOperations = array:set(Out_pos, Result, Operations),
             compute(NewOperations, Current + 4);
         2 ->  % multiply
-            A_pos = array:get(Current + 1, Operations),
-            B_pos = array:get(Current + 2, Operations),
+            LeftIndex = array:get(Current + 1, Operations),
+            RightIndex = array:get(Current + 2, Operations),
             Out_pos = array:get(Current + 3, Operations),
-            A = array:get(A_pos, Operations),
-            B = array:get(B_pos, Operations),
-            NewOperations = array:set(Out_pos, A * B, Operations),
+            Left = array:get(LeftIndex, Operations),
+            Right = array:get(RightIndex, Operations),
+            Result = Left * Right,
+            NewOperations = array:set(Out_pos, Result, Operations),
             compute(NewOperations, Current + 4);
         99 -> array:to_list(Operations);
         _ -> throw({bad_opcode, OpCode})
