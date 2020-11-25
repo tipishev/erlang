@@ -14,7 +14,12 @@ solve(day1) ->
 solve(day2) ->
     Input = read_comma_separated_integers(day2),
     #solution{part1=day2:solve_part1(Input),
-              part2=day2:solve_part2(Input)}.
+              part2=day2:solve_part2(Input)};
+
+solve(day3) ->
+    Input = read_newline_comma_separated_strings(day3),
+    #solution{part1=day3:solve_part1(Input),
+              part2=day3:solve_part2(Input)}.
 
 %%% test
 
@@ -37,3 +42,11 @@ read_comma_separated_integers(Filename) ->
     {ok, Data} = file:read_file(Fullpath),
     StringNumbers = string:tokens(binary_to_list(Data), ",\n"),
     lists:map(fun erlang:list_to_integer/1, StringNumbers).
+
+%% reads comma and newline separated strings from "inputs/Filename"
+read_newline_comma_separated_strings(Filename) ->
+    Fullpath = filename:join([?INPUTS_DIR, Filename]),
+    {ok, Data} = file:read_file(Fullpath),
+    Lines = string:tokens(binary_to_list(Data), "\n"),
+    io:format("~p~n", [Lines]),
+    lists:map(fun(Line) -> string:tokens(Line, ",") end, Lines).

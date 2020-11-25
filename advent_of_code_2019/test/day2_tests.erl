@@ -1,4 +1,4 @@
--module(day2_tests).
+-module(day3_tests).
 -include_lib("eunit/include/eunit.hrl").
 
 -define(assertComputesTo(Input, ExpectedOutput),

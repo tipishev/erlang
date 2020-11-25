@@ -24,11 +24,12 @@ solve_part2([Zeroth, _, _ | Tail]) ->
     Verb * 100 + Noun.
 
 
+%%% internals
+
 calculate(Zeroth, Tail, Verb, Noun) ->
     hd(compute([Zeroth, Verb, Noun | Tail])).
 
 
-%%% internals
 
 compute(Input) ->
     Operations = array:fix(array:from_list(Input)),
