@@ -14,9 +14,11 @@
 
 solve_part1(Input) ->
     {WireA, WireB} = parse(Input),
-    distance_to_closest_intersection(WireA, WireB).
+    ota_distance_to_closest_intersection(WireA, WireB).
 
-solve_part2(_Input) -> undefined.
+solve_part2(Input) ->
+    {WireA, WireB} = parse(Input),
+    path_distance_to_closest_intersection(WireA, WireB).
 
 %%% internals
 parse([WireA, WireB]) ->
@@ -32,7 +34,16 @@ parse_segment([DirectionLetter | LengthString]) ->
     end,
     {DirectionAtom, list_to_integer(LengthString)}.
 
-distance_to_closest_intersection(WireA, WireB) ->
+path_distance_to_closest_intersection(WireA, WireB) ->
+    CommonSpots = sets:to_list(sets:intersection(covered_spots(WireA),
+                                                 covered_spots(WireB))),
+    WireAPathDistances = path_distances(CommonSpots, WireA),
+    WireBPathDistances = path_distances(CommonSpots, WireB),
+    TotalPathDistances = [DistA + DistB || DistA <- WireAPathDistances,
+                                           DistB <- WireBPathDistances],
+    lists:min(TotalPathDistances).
+
+ota_distance_to_closest_intersection(WireA, WireB) ->
     CommonSpots = sets:to_list(sets:intersection(covered_spots(WireA),
                                                  covered_spots(WireB))),
     lists:min([abs(X) + abs(Y) || {X, Y} <- CommonSpots]).
