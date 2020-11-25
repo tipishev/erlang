@@ -4,6 +4,13 @@
 -define(assertMinDistance(Input, ExpectedDistance),
         ?_assertEqual(day3:distance(Input), ExpectedDistance)).
 
+helpers_test_() ->
+    [
+     {"Segment to tuple",
+     ?_assertEqual(day3:segment_to_tuple("R123"), {right, 123})}
+    ].
+
+
 part1_test_() ->
     [
 
