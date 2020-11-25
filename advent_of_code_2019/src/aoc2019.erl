@@ -58,5 +58,4 @@ read_newline_comma_separated_strings(Filename) ->
     Fullpath = filename:join([?INPUTS_DIR, Filename]),
     {ok, Data} = file:read_file(Fullpath),
     Lines = string:tokens(binary_to_list(Data), "\n"),
-    io:format("~p~n", [Lines]),
     lists:map(fun(Line) -> string:tokens(Line, ",") end, Lines).

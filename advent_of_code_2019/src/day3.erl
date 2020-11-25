@@ -7,7 +7,7 @@
 
 %% TODO macro to exclude this export line
 %% for tests
--export([parse_segment/1, affected_spots/1, delta_spots/2]).
+-export([parse_segment/1, covered_spots/1, delta_spots/2]).
 
 
 %%% solution behavior
@@ -32,21 +32,28 @@ parse_segment([DirectionLetter | LengthString]) ->
     end,
     {DirectionAtom, list_to_integer(LengthString)}.
 
-distance_to_closest_intersection(WireA, WireB) ->  % FIXME intersect them
-    {affected_spots(WireA), affected_spots(WireB)}.
+distance_to_closest_intersection(WireA, WireB) ->
+    CommonSpots = sets:to_list(sets:intersection(covered_spots(WireA),
+                                                 covered_spots(WireB))),
+    lists:min([abs(X) + abs(Y) || {X, Y} <- CommonSpots]).
 
-affected_spots(Wire) ->
-    lists:foldl(fun add_spots/2,
-                _Acc0={_LastSpot={0,0}, _AllSpots=sets:new()},
-                Wire).
+covered_spots(Wire) ->
+    {_FinalSpot, CoveredSpots} = lists:foldl(
+                                  fun add_spots/2,
+                                  _Acc0={_LastSpot={0,0}, _AllSpots=sets:new()},
+                                         Wire),
+    CoveredSpots.
 
 add_spots(Segment, _AccIn={LastSpot, AllSpots}) ->
-    undefined.
+    DeltaSpots = delta_spots(LastSpot, Segment),
+    NewSpots = sets:from_list(DeltaSpots),
+    {lists:last(DeltaSpots), sets:union(AllSpots, NewSpots)}.
 
 delta_spots(_LastSpot={X, Y}, _Segment={Direction, Length}) ->
+    Deltas = lists:seq(1, Length),
     case Direction of
-        right -> [{X + Delta, Y} || Delta <- lists:seq(1, Length)];
-        up -> [{X, Y + Delta} || Delta <- lists:seq(1, Length)];
-        left -> [{X - Delta, Y} || Delta <- lists:seq(1, Length)];
-        down -> [{X, Y - Delta} || Delta <- lists:seq(1, Length)]
+        right -> [{X + Delta, Y} || Delta <- Deltas];
+        up -> [{X, Y + Delta} || Delta <- Deltas];
+        left -> [{X - Delta, Y} || Delta <- Deltas];
+        down -> [{X, Y - Delta} || Delta <- Deltas]
     end.
