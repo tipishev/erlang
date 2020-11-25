@@ -4,12 +4,36 @@
 -define(assertMinDistance(Input, ExpectedDistance),
         ?_assertEqual(day3:solve_part1(Input), ExpectedDistance)).
 
-helpers_test_() ->
+%%% Helpers
+
+segment_to_tuple_test_() ->
     [
      {"Segment to tuple",
-     ?_assertEqual(day3:parse_segment("R123"), {right, 123})}
+     ?_assertEqual({right, 123}, day3:parse_segment("R123"))}
     ].
 
+delta_spots_test_() ->
+    [
+
+     {"Going right",
+      ?_assertEqual([{1, 0}, {2, 0}, {3,0}],
+                    day3:delta_spots({0, 0}, {right, 3}))},
+
+     {"Going up",
+      ?_assertEqual([{0, 1}, {0, 2}],
+                    day3:delta_spots({0, 0}, {up, 2}))}
+
+    ].
+
+affected_spots_test_() ->
+    [
+     {"Single segment check",
+      ?_assertEqual([{1, 0}, {2, 0}, {3,0}],
+                    day3:affected_spots([{right, 3}]))}
+    ].
+
+
+%%% Tasks
 
 part1_test_() ->
     [

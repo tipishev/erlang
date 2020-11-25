@@ -5,8 +5,9 @@
 %% aoc_solution callbacks
 -export([solve_part1/1, solve_part2/1]).
 
+%% TODO macro to exclude this export line
 %% for tests
--export([parse_segment/1]).
+-export([parse_segment/1, affected_spots/1, delta_spots/2]).
 
 
 %%% solution behavior
@@ -40,5 +41,12 @@ affected_spots(Wire) ->
                 Wire).
 
 add_spots(Segment, _AccIn={LastSpot, AllSpots}) ->
-    pass.
+    undefined.
 
+delta_spots(_LastSpot={X, Y}, _Segment={Direction, Length}) ->
+    case Direction of
+        right -> [{X + Delta, Y} || Delta <- lists:seq(1, Length)];
+        up -> [{X, Y + Delta} || Delta <- lists:seq(1, Length)];
+        left -> [{X - Delta, Y} || Delta <- lists:seq(1, Length)];
+        down -> [{X, Y - Delta} || Delta <- lists:seq(1, Length)]
+    end.

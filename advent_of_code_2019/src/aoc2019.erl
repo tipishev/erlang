@@ -1,5 +1,5 @@
 -module(aoc2019).
--export([solve/1, test/1]).
+-export([solve/1, test/1, test/2]).
 
 -record(solution, {part1, part2}).
 -define(INPUTS_DIR, "inputs").
@@ -23,12 +23,21 @@ solve(day3) ->
 
 %%% test
 
+%% test the whole day
 test(Day) when is_atom(Day) ->
     TestModuleName =unicode:characters_to_list([atom_to_list(Day),
                                                "_tests"]),
     TestModule = list_to_atom(TestModuleName),
     eunit:test(TestModule, [verbose]).
-    % eunit:test({generator, fun day3_tests:part1_test_/0}).
+ 
+%% test a single test case within a day
+test(Day, TestCase) when is_atom(Day), is_atom(TestCase) ->
+    TestModuleName =unicode:characters_to_list([atom_to_list(Day),
+                                               "_tests"]),
+    TestModule = list_to_atom(TestModuleName),
+    eunit:test({generator, fun TestModule:TestCase/0}).
+
+
 
 %% reads newline-separated integers from "inputs/Filename"
 read_newline_separated_integers(Filename) ->
