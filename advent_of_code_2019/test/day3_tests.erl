@@ -1,4 +1,4 @@
--module(day4_tests).
+-module(day3_tests).
 -include_lib("eunit/include/eunit.hrl").
 
 part1_test_() ->
