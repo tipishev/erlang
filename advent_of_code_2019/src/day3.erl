@@ -35,12 +35,12 @@ parse_segment([DirectionLetter | LengthString]) ->
     {DirectionAtom, list_to_integer(LengthString)}.
 
 path_distance_to_closest_intersection(WireA, WireB) ->
-    CommonSpots = sets:to_list(sets:intersection(covered_spots(WireA),
-                                                 covered_spots(WireB))),
+    [SetA, SetB] = [sets:from_list(covered_spots(Wire)) || Wire <- [WireA, WireB]],
+    CommonSpots = sets:to_list(sets:intersection(SetA, SetB)),
     WireAPathDistances = path_distances(CommonSpots, WireA),
     WireBPathDistances = path_distances(CommonSpots, WireB),
-    TotalPathDistances = [DistA + DistB || DistA <- WireAPathDistances,
-                                           DistB <- WireBPathDistances],
+    TotalPathDistances = [DistA + DistB
+                          || {DistA, DistB} <- lists:zip(WireAPathDistances, WireBPathDistances)],
     lists:min(TotalPathDistances).
 
 path_distances(CommonSpots, Wire) ->
