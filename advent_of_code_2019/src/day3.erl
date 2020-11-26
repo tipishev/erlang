@@ -7,14 +7,14 @@
 
 %% TODO macro to exclude this export line
 %% for tests
--export([parse_segment/1, covered_spots/1, delta_spots/2]).
+-export([parse_segment/1, covered_spots/1, delta_spots/2, index_of/2]).
 
 
 %%% solution behavior
 
 solve_part1(Input) ->
     {WireA, WireB} = parse(Input),
-    ota_distance_to_closest_intersection(WireA, WireB).
+    cab_distance_to_closest_intersection(WireA, WireB).
 
 solve_part2(Input) ->
     {WireA, WireB} = parse(Input),
@@ -43,22 +43,33 @@ path_distance_to_closest_intersection(WireA, WireB) ->
                                            DistB <- WireBPathDistances],
     lists:min(TotalPathDistances).
 
-ota_distance_to_closest_intersection(WireA, WireB) ->
-    CommonSpots = sets:to_list(sets:intersection(covered_spots(WireA),
-                                                 covered_spots(WireB))),
+path_distances(CommonSpots, Wire) ->
+    CoveredSpots = covered_spots(Wire),
+    lists:map(fun(Spot) -> index_of(Spot, CoveredSpots) end, CommonSpots).
+
+%% find the index at which the element is first met in list
+index_of(Element, List) ->
+    index_of(Element, List, 1).
+
+index_of(_, [], _) -> not_found;
+index_of(Element, [Element|_], Index) -> Index;
+index_of(Element, [_|Tail], Index) -> index_of(Element, Tail, Index+1).
+
+cab_distance_to_closest_intersection(WireA, WireB) ->
+    [SetA, SetB] = [sets:from_list(covered_spots(Wire)) || Wire <- [WireA, WireB]],
+    CommonSpots = sets:to_list(sets:intersection(SetA, SetB)),
     lists:min([abs(X) + abs(Y) || {X, Y} <- CommonSpots]).
 
 covered_spots(Wire) ->
     {_FinalSpot, CoveredSpots} = lists:foldl(
                                   fun add_spots/2,
-                                  _Acc0={_LastSpot={0,0}, _AllSpots=sets:new()},
+                                  _Acc0={_LastSpot={0,0}, _AllSpots=[]},
                                          Wire),
     CoveredSpots.
 
 add_spots(Segment, _AccIn={LastSpot, AllSpots}) ->
     DeltaSpots = delta_spots(LastSpot, Segment),
-    NewSpots = sets:from_list(DeltaSpots),
-    {lists:last(DeltaSpots), sets:union(AllSpots, NewSpots)}.
+    {lists:last(DeltaSpots), AllSpots ++ DeltaSpots}.
 
 delta_spots(_LastSpot={X, Y}, _Segment={Direction, Length}) ->
     Deltas = lists:seq(1, Length),
