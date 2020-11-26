@@ -19,7 +19,7 @@
 - [ ] [Efficiency Guide](http://erlang.org/doc/efficiency_guide/introduction.html)
 - [ ] [Erlang module](http://erlang.org/doc/man/erlang.html)
 - [X] [Erl](http://erlang.org/doc/man/erl.html)
-- [ ] [lists](http://erlang.org/doc/man/lists.html)
+- [X] [lists](http://erlang.org/doc/man/lists.html)
 - [ ] [code](http://erldocs.com/18.0/kernel/code.html)
 - [ ] [gen_server](http://erlang.org/doc/man/gen_server.html) + source
 - [ ] [OTP Design Principles](http://erlang.org/doc/design_principles/des_princ.html)
@@ -59,6 +59,7 @@
 * programming_erlang: Code and exercises from Programming Erlang 2nd edition.
 * beam_book: Code from The Beam Book.
 * lyse: Code from Learn You Some Erlang
+* advent_of_code_2019: Erlang app for solving AOC2019
 
 ## Beginner Talk Ideas
 
