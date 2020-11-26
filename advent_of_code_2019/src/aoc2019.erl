@@ -19,7 +19,12 @@ solve(day2) ->
 solve(day3) ->
     Input = read_newline_comma_separated_strings(day3),
     #solution{part1=day3:solve_part1(Input),
-              part2=day3:solve_part2(Input)}.
+              part2=day3:solve_part2(Input)};
+
+solve(day4) ->
+    Input = {367479, 893698},
+    #solution{part1=day4:solve_part1(Input),
+              part2=day4:solve_part2(Input)}.
 
 %%% test
 
