@@ -5,7 +5,7 @@
 -export([solve_part1/1, solve_part2/1]).
 
 %%% test exports
--export([check/1]).
+-export([check/1, check_groups/1]).
 
 %%% solution behavior
 
@@ -15,9 +15,9 @@ solve_part1({PossibleMin, PossibleMax}) ->
     length(Passwordy).
 solve_part2({PossibleMin, PossibleMax}) ->
     Passwordy = [Password || Password <- lists:seq(PossibleMin, PossibleMax), check(Password)],
-    Passwordy.
+    length([Password || Password <- Passwordy, check_groups(Password)]).
 
-
+%%% Part 1
 check(Password) ->
     Digits = integer_to_list(Password),
     no_double(-1, Digits).
@@ -48,3 +48,18 @@ double(OldNumber, [NewDigit | RemainingDigits]) ->
 
 from_ascii(ZeroToNineAscii) ->
     ZeroToNineAscii - 48.
+
+
+%%% Part 2
+
+check_groups(PasswordInt) ->
+    [FirstDigit|Rest] = integer_to_list(PasswordInt),
+    {_, Counts} = lists:foldl(fun groups/2, {_Curr=FirstDigit, _Counts=[1]}, Rest),
+    lists:member(2, Counts).
+
+groups(Curr, {Curr, [Count|Counts]}) ->
+    {Curr, [Count + 1 | Counts]};
+groups(New, {_Curr, Counts}) ->
+    {New, [1 | Counts]}.
+
+    
