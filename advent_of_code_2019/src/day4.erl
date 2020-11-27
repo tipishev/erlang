@@ -61,5 +61,3 @@ groups(Curr, {Curr, [Count|Counts]}) ->
     {Curr, [Count + 1 | Counts]};
 groups(New, {_Curr, Counts}) ->
     {New, [1 | Counts]}.
-
-    
