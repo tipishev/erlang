@@ -1,0 +1,3 @@
+[submodule "erlang_in_anger/recon_demo"]
+	path = erlang_in_anger/recon_demo
+	url = git@github.com:ferd/recon_demo.git
