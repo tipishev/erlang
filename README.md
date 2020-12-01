@@ -5,21 +5,21 @@
 ### Books
 
 - [X] [Programming Erlang: Software for a Concurrent World](https://books.google.se/books/about/Programming_Erlang.html)
-- [ ] [Learn You Some Erlang for Great Good! A Beginner's Guide](https://learnyousomeerlang.com/content)
-- [ ] [The Erlang Runtime System aka The Beam Book](https://blog.stenmans.org/theBeamBook/)
+- [X] [Learn You Some Erlang for Great Good! A Beginner's Guide](https://learnyousomeerlang.com/content)
+- [ ] [Erlang in Anger](http://www.erlang-in-anger.com/)
 - [ ] [Erlang and OTP in Action](https://www.manning.com/books/erlang-and-otp-in-action)
+- [ ] [The Erlang Runtime System aka The Beam Book](https://blog.stenmans.org/theBeamBook/)
 - [ ] [Adopting Erlang](https://adoptingerlang.org)
 - [ ] [Erlang Programming](https://www.oreilly.com/library/view/erlang-programming/9780596803940/) 2009, outdated?
-- [ ] [Erlang in Anger](http://www.erlang-in-anger.com/)
 - [ ] [Études for Erlang](https://www.oreilly.com/library/view/etudes-for-erlang/9781491917657/)
 
 ### Official Docs
 
 - [X] [Programming Rules](http://www.erlang.se/doc/programming_rules.shtml)
-- [ ] [Efficiency Guide](http://erlang.org/doc/efficiency_guide/introduction.html)
-- [ ] [Erlang module](http://erlang.org/doc/man/erlang.html)
 - [X] [Erl](http://erlang.org/doc/man/erl.html)
+- [ ] [Erlang module](http://erlang.org/doc/man/erlang.html)
 - [X] [lists](http://erlang.org/doc/man/lists.html)
+- [ ] [Efficiency Guide](http://erlang.org/doc/efficiency_guide/introduction.html)
 - [ ] [code](http://erldocs.com/18.0/kernel/code.html)
 - [ ] [gen_server](http://erlang.org/doc/man/gen_server.html) + source
 - [ ] [OTP Design Principles](http://erlang.org/doc/design_principles/des_princ.html)
@@ -38,8 +38,8 @@
 
 ## Tooling
 
-- [x] Use Dialyzer plugin for Vim.
-- [x] Find a plugin powerful enough to suggest options for `gen_tcp:listen`.
+- [X] Use Dialyzer plugin for Vim.
+- [X] Find a plugin powerful enough to suggest options for `gen_tcp:listen`.
 - [ ] Set up a configurable code formatter `rebar3 format`?
 - [ ] [Rebar3](https://www.rebar3.org/docs/)
 - [ ] [Erlang LS presentation by Roberto Aloi](https://www.youtube.com/watch?v=8FibGzqygo0)
@@ -58,8 +58,9 @@
 
 * programming_erlang: Code and exercises from Programming Erlang 2nd edition.
 * beam_book: Code from The Beam Book.
-* lyse: Code from Learn You Some Erlang
-* advent_of_code_2019: Erlang app for solving AOC2019
+* lyse: Code from Learn You Some Erlang.
+* advent_of_code_2019: Erlang app for solving AOC2019.
+* erlang_in_anger: Notes and exercises from Erlang in Anger.
 
 ## Beginner Talk Ideas
 
