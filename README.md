@@ -6,7 +6,7 @@
 
 - [X] [Programming Erlang: Software for a Concurrent World](https://books.google.se/books/about/Programming_Erlang.html)
 - [X] [Learn You Some Erlang for Great Good! A Beginner's Guide](https://learnyousomeerlang.com/content)
-- [ ] [Erlang in Anger](http://www.erlang-in-anger.com/)
+- [X] [Erlang in Anger](http://www.erlang-in-anger.com/)
 - [ ] [Erlang and OTP in Action](https://www.manning.com/books/erlang-and-otp-in-action)
 - [ ] [The Erlang Runtime System aka The Beam Book](https://blog.stenmans.org/theBeamBook/)
 - [ ] [Adopting Erlang](https://adoptingerlang.org)
@@ -45,7 +45,7 @@
 - [ ] [Erlang LS presentation by Roberto Aloi](https://www.youtube.com/watch?v=8FibGzqygo0)
 - [ ] [Glass](https://github.com/klarna-incubator/glass)
 
-## Debugging
+## Debugging and Tracing
 
 * https://robertoaloi.github.io/erlang/profiling-erlang-applications-using-redbug
 * https://blog.stenmans.org/theBeamBook/#_redbug
