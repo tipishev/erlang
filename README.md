@@ -7,8 +7,9 @@
 - [X] [Programming Erlang: Software for a Concurrent World](https://books.google.se/books/about/Programming_Erlang.html)
 - [X] [Learn You Some Erlang for Great Good! A Beginner's Guide](https://learnyousomeerlang.com/content)
 - [X] [Erlang in Anger](http://www.erlang-in-anger.com/)
-- [ ] [Erlang and OTP in Action](https://www.manning.com/books/erlang-and-otp-in-action)
 - [ ] [The Erlang Runtime System aka The Beam Book](https://blog.stenmans.org/theBeamBook/)
+- [ ] [Erlang and OTP in Action](https://www.manning.com/books/erlang-and-otp-in-action)
+- [ ] [Property-Based Testing with PropEr, Erlang, and Elixir](https://pragprog.com/titles/fhproper/property-based-testing-with-proper-erlang-and-elixir/)
 - [ ] [Adopting Erlang](https://adoptingerlang.org)
 - [ ] [Erlang Programming](https://www.oreilly.com/library/view/erlang-programming/9780596803940/) 2009, outdated?
 - [ ] [Études for Erlang](https://www.oreilly.com/library/view/etudes-for-erlang/9781491917657/)
